@@ -1,19 +1,26 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-container>
+    <v-layout row wrap>
+      <date-time-streak />
+      <GroupBtnStreak />
+    </v-layout>
+  </v-container>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 // @ is an alias to /src
 import Vue from 'vue'
-import HelloWorld from '@/components/HelloWorld.vue'
+import GroupBtnStreak from '@/components/GroupBtnStreak.vue'
+import DateTimeStreak from '@/components/DateTimeStreak.vue'
 
 export default Vue.extend({
-  name: 'Home',
+  name: 'home',
   components: {
-    HelloWorld,
+    GroupBtnStreak,
+    DateTimeStreak,
+  },
+  created() {
+    this.$store.dispatch('initPickedDayDataListener')
   },
 })
 </script>
