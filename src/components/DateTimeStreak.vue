@@ -16,7 +16,7 @@ export default Vue.extend({
         return this.$store.state.pickedDate
       },
       set(value) {
-        this.$store.dispatch('set_picked_date', value)
+        this.$store.dispatch('setPickedDate', value)
       },
     },
   },
