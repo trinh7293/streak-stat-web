@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import db from '@/database'
+import { firestore } from '@/database'
 import getTodayFormat from '@/utils/dateTimeHandle'
 import {
   COLLECTION_DAY_DATA, WEAKING_UP_EARLY, RUNNING, READING,
 } from '@/constants'
+import { DateData } from '@/store/interface-object'
 
 import { SET_PICKED_DATE, SET_DATE_DATA, SET_DATE_DATA_UNSUBSCRIBE } from './mutation-types'
 
-const dayColl = db.collection(COLLECTION_DAY_DATA)
+const dayColl = firestore.collection(COLLECTION_DAY_DATA)
 
 Vue.use(Vuex)
 
-const initDateData = {
+const initDateData: DateData = {
   [WEAKING_UP_EARLY]: false,
   [RUNNING]: false,
   [READING]: false,
@@ -22,14 +23,11 @@ const unsubcribe = () => {
   console.warn('there are no subscription')
 }
 
+
 export default new Vuex.Store({
   state: {
     pickedDate: getTodayFormat(),
-    dateData: {
-      [WEAKING_UP_EARLY]: false,
-      [RUNNING]: false,
-      [READING]: false,
-    },
+    dateDatas: [],
     dateDataUnsubscribe: unsubcribe,
   },
   mutations: {
@@ -37,7 +35,7 @@ export default new Vuex.Store({
       state.pickedDate = dateFormat
     },
     [SET_DATE_DATA](state, payload) {
-      state.dateData = payload
+      state.dateDatas = payload
     },
     [SET_DATE_DATA_UNSUBSCRIBE](state, payload) {
       state.dateDataUnsubscribe = payload

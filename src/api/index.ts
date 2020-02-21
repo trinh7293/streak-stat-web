@@ -1,8 +1,8 @@
-import db from '@/database'
+import { firestore } from '@/database'
 import getTodayFormat from '@/utils/dateTimeHandle'
 import { COLLECTION_DAY_DATA } from '@/constants'
 
-const dayColl = db.collection(COLLECTION_DAY_DATA)
+const dayColl = firestore.collection(COLLECTION_DAY_DATA)
 
 const editDateData = (pickedDay: string, data: {}) => {
   const today = getTodayFormat()
