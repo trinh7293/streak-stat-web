@@ -8,10 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "firebase": "^7.8.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
+    "moment-range": "^4.0.2",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
     "vue-property-decorator": "^8.3.0",
@@ -20,6 +22,7 @@
     "vuex": "^3.1.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.149",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
     "@vue/cli-plugin-babel": "^4.2.0",
@@ -56,8 +59,14 @@
     },
     "rules": {
       "no-console": "off",
-      "arrow-parens": ["error", "as-needed"],
-      "semi": [2, "never"]
+      "arrow-parens": [
+        "error",
+        "as-needed"
+      ],
+      "semi": [
+        2,
+        "never"
+      ]
     }
   },
   "browserslist": [

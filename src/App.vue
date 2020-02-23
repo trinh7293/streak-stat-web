@@ -3,10 +3,24 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <router-link to="/setup-goal">Setup</router-link>
     </div>
     <router-view/>
   </v-app>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  created() {
+    // this.$store.dispatch('getSettingGoals')
+    this.$store.dispatch('initSettingGoalListener')
+    this.$store.dispatch('initListDayDataListener')
+    // this.$store.dispatch('getListDayData')
+  },
+})
+</script>
 
 <style lang="scss">
 #app {

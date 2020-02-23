@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <date-time-streak />
-      <GroupBtnStreak />
+      <DateTimeStreak />
+      <SingleDate />
     </v-layout>
   </v-container>
 </template>
@@ -10,17 +10,14 @@
 <script lang='ts'>
 // @ is an alias to /src
 import Vue from 'vue'
-import GroupBtnStreak from '@/components/GroupBtnStreak.vue'
+import SingleDate from '@/components/SingleDate.vue'
 import DateTimeStreak from '@/components/DateTimeStreak.vue'
 
 export default Vue.extend({
-  name: 'home',
+  name: 'Home',
   components: {
-    GroupBtnStreak,
+    SingleDate,
     DateTimeStreak,
-  },
-  created() {
-    this.$store.dispatch('initPickedDayDataListener')
   },
 })
 </script>

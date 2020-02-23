@@ -1,5 +1,6 @@
 import moment from 'moment'
 
-const getTodayFormat = () => moment().format('YYYY-MM-DD')
+export const getTodayFormat = () => moment().format('YYYY-MM-DD')
 
-export default getTodayFormat
+// get today timestamp UTC
+export const getTodayTp = () => 10000

@@ -7,6 +7,7 @@
 <script lang='ts'>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { SET_PICKED_DATE } from '@/store/mutation-types'
 
 export default Vue.extend({
   computed: {
@@ -16,7 +17,7 @@ export default Vue.extend({
         return this.$store.state.pickedDate
       },
       set(value) {
-        this.$store.dispatch('setPickedDate', value)
+        this.$store.commit(SET_PICKED_DATE, value)
       },
     },
   },

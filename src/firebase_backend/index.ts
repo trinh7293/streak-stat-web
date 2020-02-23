@@ -1,6 +1,9 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from 'firebase/app'
-
+import {
+  COLLECTION_DAY_DATA,
+  COLLECTION_GOAL_DATA,
+} from '@/constants'
 // Add the Firebase products that you want to use
 import 'firebase/firestore'
 import 'firebase/functions'
@@ -21,3 +24,6 @@ firebase.initializeApp(firebaseConfig)
 
 export const firestore = firebase.firestore()
 export const functions = firebase.functions()
+
+export const dayColl = firestore.collection(COLLECTION_DAY_DATA)
+export const goalColl = firestore.collection(COLLECTION_GOAL_DATA)
