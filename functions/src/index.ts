@@ -6,3 +6,6 @@ import * as functions from 'firebase-functions'
 // export const helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+exports.addMessage = functions.https.onCall(data => {
+  console.log('data', data.text)
+})

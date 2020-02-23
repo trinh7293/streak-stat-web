@@ -9,7 +9,7 @@
 <script lang='ts'>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import editDateData from '@/api'
+import { editDateData } from '@/api'
 
 export default Vue.extend({
   name: 'BtnStreak',

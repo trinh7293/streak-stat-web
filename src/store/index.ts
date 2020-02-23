@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import db from '@/database'
+import { firestore } from '@/database'
 import getTodayFormat from '@/utils/dateTimeHandle'
 import {
   COLLECTION_DAY_DATA, WEAKING_UP_EARLY, RUNNING, READING,
 } from '@/constants'
+import { DateData } from '@/store/interface-object'
 
 import { SET_PICKED_DATE, SET_DATE_DATA, SET_DATE_DATA_UNSUBSCRIBE } from './mutation-types'
 
-const dayColl = db.collection(COLLECTION_DAY_DATA)
+const dayColl = firestore.collection(COLLECTION_DAY_DATA)
 
 Vue.use(Vuex)
 
-const initDateData = {
+const initDateData: DateData = {
   [WEAKING_UP_EARLY]: false,
   [RUNNING]: false,
   [READING]: false,
