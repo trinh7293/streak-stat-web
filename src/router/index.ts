@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import About from '../views/About.vue'
-import TestTime from '../views/TestTime.vue'
+// import About from '../views/About.vue'
+// import TestTime from '../views/TestTime.vue'
 import SetupGoal from '../views/SetupGoal.vue'
 
 Vue.use(VueRouter)
@@ -22,20 +22,20 @@ const routes = [
     // TODO edit test
     component: SetupGoal,
   },
-  {
-    path: '/about',
-    name: 'About',
-    // component: Home,
-    // TODO edit test
-    component: About,
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    // component: Home,
-    // TODO edit test
-    component: TestTime,
-  },
+  // {
+  //   path: '/about',
+  //   name: 'About',
+  //   // component: Home,
+  //   // TODO edit test
+  //   component: About,
+  // },
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   // component: Home,
+  //   // TODO edit test
+  //   component: TestTime,
+  // },
 ]
 
 const router = new VueRouter({

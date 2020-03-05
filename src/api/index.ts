@@ -1,71 +1,93 @@
-import { goalColl, functions, dayColl } from '@/firebase_backend'
 import {
-  GoalSetting,
-  GoalData,
-} from '@/store/interface-object'
-import {
-  NAME,
-  ICON,
-  ID,
-  START_STREAK,
-  STREAK_NUM,
-  IS_END_STREAK,
-} from '@/constants'
-import axios from 'axios'
+  goalStreakColl, goalSettingColl,
+} from '@/firebase_backend'
+import { getAdjacentDay } from '@/utils/dateTimeHandle'
 import store from '@/store'
-// export const addEditDateData = (pickedDate: string, goalData: GoalData) => {
-//   axios.post
-// }
+import {
+  StreakGoal,
+  SettingGoal,
+} from '@/store/interface-object'
 
-const domain = ' https://us-central1-streak-stat.cloudfunctions.net/'
-const getApiUrl = (endPoint: string) => `${domain}${endPoint}`
-
-export const testHello = async () => {
-  axios.post(getApiUrl('helloWorld'), {
-    name: 'Jane',
-  }).then(res => res.data)
-}
-
-export const addEditDateData = async (pickedDate: string, goalDataSend: GoalData) => {
-  // const editData = {
-  //   pickedDate,
-  //   ...goalDataSend,
-  // }
-  const editData = {
-    [goalDataSend.id]: {
-      [START_STREAK]: goalDataSend[START_STREAK],
-      [STREAK_NUM]: goalDataSend[STREAK_NUM],
-      [IS_END_STREAK]: goalDataSend[IS_END_STREAK],
-    },
+export const deleteStreak = async (
+  pickedDate: string,
+  streakId: string,
+) => {
+  try {
+    const streak: StreakGoal | undefined = store
+      .getters.getStreakById(streakId)
+    if (!streak) {
+      throw new Error(
+        'deleteStreak: Document does not exist!',
+      )
+    }
+    const { nextDay, prevDay } = getAdjacentDay(pickedDate)
+    const { start, end } = streak
+    const streakRef = goalStreakColl.doc(streakId)
+    if (start === end) {
+      await streakRef.delete()
+    } else if (pickedDate === start) {
+      await streakRef.update({ start: nextDay })
+    } else if (pickedDate === end) {
+      await streakRef.update({ end: prevDay })
+    } else {
+      await streakRef.update({ end: prevDay })
+      const newStreak = {
+        goalSettingId: streak.goalSettingId,
+        start: nextDay,
+        end,
+      }
+      await goalStreakColl.add(newStreak)
+    }
+  } catch (error) {
+    console.log('deleteStreak failed: ', error)
   }
-  dayColl.doc(pickedDate).set(editData, {
-    merge: true,
-  })
-  // axios.post(getApiUrl('editGoalData'), ededitGoalDataitData).then(res => res.data)
 }
 
-export const addGoalSetting = async (data: GoalSetting) => {
+
+export const addStreak = async (
+  pickedDate: string,
+  goalSettingId: string,
+) => {
+  const {
+    prevStreak,
+    nextStreak,
+  } = store.getters
+    .getAdjacentSreaks(pickedDate, goalSettingId)
+  if (prevStreak && nextStreak) {
+    const prevRef = goalStreakColl.doc(prevStreak.id)
+    const nextRef = goalStreakColl.doc(nextStreak.id)
+    await prevRef.update({ end: nextStreak.end })
+    await nextRef.delete()
+  } else if (prevStreak) {
+    const prevRef = goalStreakColl.doc(prevStreak.id)
+    await prevRef.update({ end: pickedDate })
+  } else if (nextStreak) {
+    const nextRef = goalStreakColl.doc(nextStreak.id)
+    await nextRef.update({ start: pickedDate })
+  } else {
+    const newStreak = {
+      goalSettingId,
+      start: pickedDate,
+      end: pickedDate,
+    }
+    await goalStreakColl.add(newStreak)
+  }
+}
+
+export const addGoalSetting = async (data: SettingGoal) => {
   const addData = {
-    [NAME]: data[NAME],
-    [ICON]: data[ICON],
+    name: data.name,
+    icon: data.icon,
   }
-  goalColl.add(addData)
+  goalSettingColl.add(addData)
 }
 
-export const editGoalSetting = async (data: GoalSetting) => {
+export const editGoalSetting = async (
+  data: SettingGoal,
+) => {
   const editData = {
-    [NAME]: data[NAME],
-    [ICON]: data[ICON],
+    name: data.name,
+    icon: data.icon,
   }
-  goalColl.doc(data[ID]).set(editData)
-}
-
-export const testCall = (messageText: string) => {
-  const addMessage = functions.httpsCallable('addMessage')
-  addMessage({ text: messageText }).then(result => {
-    // Read result of the Cloud Function.
-    const sanitizedMessage = result.data.text
-    console.log(sanitizedMessage)
-    // ...
-  })
+  goalSettingColl.doc(data.id).set(editData)
 }

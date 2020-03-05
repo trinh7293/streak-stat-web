@@ -1,7 +1,16 @@
 <template>
   <v-container>
     <v-layout row wrap >
-      <v-flex xs2 v-for="goal in getPickedDateDataGoals" :key="goal.id">
+      <v-flex
+        xs2
+        v-for="goal in getSingleDateGoal"
+        :key="goal.settingId"
+      >
+      <!-- <v-flex
+        xs12
+        v-for="goal in getPickedDateDataSample"
+        :key="goal.settingId"
+      > -->
         <GoalInfo
           v-bind='goal'
           :pickedDate='pickedDate'
@@ -16,7 +25,6 @@
 import Vue from 'vue'
 import GoalInfo from '@/components/GoalInfo.vue'
 import { mapGetters, mapState } from 'vuex'
-import { START_STREAK, STREAK_NUM, IS_END_STREAK } from '../constants'
 
 export default Vue.extend({
   name: 'SingleDate',
@@ -24,34 +32,31 @@ export default Vue.extend({
     GoalInfo,
   },
   computed: {
-    ...mapGetters(['getPickedDateDataGoals']),
+    ...mapGetters(['getSingleDateGoal']),
     ...mapState(['pickedDate']),
   },
   data: () => ({
     getPickedDateDataSample: [
       {
-        id: '1',
-        name: 'Weaking',
+        settingId: 'settingId-1',
+        name: 'Weakup',
         icon: 'We',
-        [START_STREAK]: '20-2-2020',
-        [STREAK_NUM]: 1,
-        [IS_END_STREAK]: false,
+        streakId: 'streakId1',
+        start: '2020-02-07',
+        streakCount: 5,
       },
       {
-        id: '2',
+        settingId: 'settingId-2',
+        name: 'Running',
+        icon: 'Ru',
+        streakId: 'streakId2',
+        start: '2020-02-08',
+        streakCount: 5,
+      },
+      {
+        settingId: '3',
         name: 'Reading',
         icon: 'Re',
-        [START_STREAK]: '20-2-2020',
-        [STREAK_NUM]: 1,
-        [IS_END_STREAK]: false,
-      },
-      {
-        id: '3',
-        name: 'Running',
-        icon: 'Run',
-        [START_STREAK]: '20-2-2020',
-        [STREAK_NUM]: 0,
-        [IS_END_STREAK]: false,
       },
     ],
   }),

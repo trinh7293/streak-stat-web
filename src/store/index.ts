@@ -1,38 +1,37 @@
 import _ from 'lodash'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { dayColl, goalColl } from '@/firebase_backend'
-import { getTodayFormat } from '@/utils/dateTimeHandle'
 import {
-  DATE,
-  ID,
-  GOAL_DATA,
-} from '@/constants'
+  getTodayFormat,
+  getAdjacentDay,
+} from '@/utils/dateTimeHandle'
 import {
-  DateData,
-  StateInterface,
-  GoalSetting,
-  FullGoalData,
+  goalSettingColl,
+  goalStreakColl,
+} from '@/firebase_backend'
+import {
+  StateType,
+  SettingGoal,
+  StreakGoal,
+  SingleDateGoal,
 } from '@/store/interface-object'
-import { convertDateData, convertGoalSetting } from '@/store/helper'
 import {
+  ADD_SETTING_DATA,
+  EDIT_SETTING_DATA,
+  DELETE_SETTING_DATA,
+  ADD_STREAK_DATA,
+  EDIT_STREAK_DATA,
+  DELETE_STREAK_DATA,
   SET_PICKED_DATE,
-  SET_DATE_DATAS,
-  ADD_DATE_DATA,
-  EDIT_DATE_DATA,
-  DELETE_DATE_DATA,
-  SET_GOAL_SETTINGS,
-  ADD_GOAL_SETTINGS,
-  EDIT_GOAL_SETTINGS,
-  DELETE_GOAL_SETTINGS,
-} from './mutation-types'
+} from '@/store/mutation-types'
+import moment from 'moment'
 
 Vue.use(Vuex)
 
-const initState: StateInterface = {
+const initState: StateType = {
   pickedDate: getTodayFormat(),
-  goalSettings: [],
-  dateDatas: [],
+  settingGoals: [],
+  streakGoals: [],
 }
 
 export default new Vuex.Store({
@@ -41,86 +40,159 @@ export default new Vuex.Store({
     [SET_PICKED_DATE](state, dateFormat) {
       state.pickedDate = dateFormat
     },
-    [SET_GOAL_SETTINGS](state, payload: Array<GoalSetting>) {
-      state.goalSettings = payload
+    [ADD_SETTING_DATA](state, payload: SettingGoal) {
+      const index = _.findIndex(
+        state.settingGoals, { id: payload.id },
+      )
+      if (index === -1) {
+        state.settingGoals.push(payload)
+      } else {
+        console.log('goalSetting is exist')
+        console.table(payload)
+      }
     },
-    [ADD_GOAL_SETTINGS](state, payload: GoalSetting) {
-      state.goalSettings.push(payload)
+    [EDIT_SETTING_DATA](state, payload: SettingGoal) {
+      const index = _.findIndex(
+        state.settingGoals, { id: payload.id },
+      )
+      state.settingGoals.splice(index, 1, payload)
     },
-    [EDIT_GOAL_SETTINGS](state, payload: GoalSetting) {
-      const index = _.findIndex(state.goalSettings, { [ID]: payload[ID] })
-      state.goalSettings.splice(index, 1, payload)
+    [DELETE_SETTING_DATA](state, payload: string) {
+      const index = _.findIndex(
+        state.settingGoals, { id: payload },
+      )
+      state.settingGoals.splice(index, 1)
     },
-    [DELETE_GOAL_SETTINGS](state, goalId: string) {
-      const index = _.findIndex(state.goalSettings, { [ID]: goalId })
-      state.goalSettings.splice(index, 1)
+    [ADD_STREAK_DATA](state, payload: StreakGoal) {
+      const index = _.findIndex(
+        state.streakGoals, { id: payload.id },
+      )
+      if (index === -1) {
+        state.streakGoals.push(payload)
+      } else {
+        console.log('goalStreak is exist')
+        console.table(payload)
+      }
     },
-    [SET_DATE_DATAS](state, payload: Array<DateData>) {
-      state.dateDatas = payload
+    [EDIT_STREAK_DATA](state, payload: StreakGoal) {
+      const index = _.findIndex(
+        state.streakGoals, { id: payload.id },
+      )
+      state.streakGoals.splice(index, 1, payload)
     },
-    [ADD_DATE_DATA](state, payload: DateData) {
-      state.dateDatas.push(payload)
-    },
-    [EDIT_DATE_DATA](state, payload) {
-      const index = _.findIndex(state.dateDatas, { [DATE]: payload[DATE] })
-      state.dateDatas.splice(index, 1, payload)
-    },
-    [DELETE_DATE_DATA](state, date) {
-      const index = _.findIndex(state.dateDatas, { [DATE]: date })
-      state.dateDatas.splice(index, 1)
+    [DELETE_STREAK_DATA](state, payload: string) {
+      const index = _.findIndex(
+        state.streakGoals, { id: payload },
+      )
+      state.streakGoals.splice(index, 1)
     },
   },
   getters: {
-    getPickedDateData: state => {
-      const { pickedDate, dateDatas } = state
-      const dd = dateDatas.find(item => item[DATE] === pickedDate)
-      return dd
-    },
-    getPickedDateDataGoals: (state, getters) => {
-      const goSe = state.goalSettings
-      const dateData = getters.getPickedDateData
-      const goSeClone = _.cloneDeep(goSe)
-      if (dateData === undefined) {
-        return goSeClone
+    getStreakBelong: state => (
+      date: string,
+    ) => state.streakGoals
+      .find(item => moment(date).isBetween(
+        moment(item.start),
+        moment(item.end),
+        undefined,
+        '[]',
+      )),
+    getStreakById: state => (
+      streakId: string,
+    ) => state.streakGoals
+      .find(item => item.id === streakId),
+    getAdjacentSreaks: state => (
+      date: string,
+      goalSettingId: string,
+    ) => {
+      const { nextDay, prevDay } = getAdjacentDay(date)
+      const nextStreak = state.streakGoals.find(
+        item => item.goalSettingId === goalSettingId
+          && item.start === nextDay,
+      )
+      const prevStreak = state.streakGoals.find(
+        item => item.goalSettingId === goalSettingId
+          && item.end === prevDay,
+      )
+      return {
+        nextStreak,
+        prevStreak,
       }
-      const goalDataClone = _.cloneDeep(dateData[GOAL_DATA])
-      const fullGoalData:
-      Array<FullGoalData> = _(goSeClone)
-        .keyBy(ID)
-        .merge(_.keyBy(goalDataClone, ID))
-        .values()
-        .value()
-      return fullGoalData
+    },
+    // state.streakGoals
+    //   .find(item => moment(date).isBetween(
+    //     moment(item.start),
+    //     moment(item.end),
+    //     undefined,
+    //     '[]',
+    //   )),
+    getStreakListInPickedDate: (
+      state,
+    ): Array<StreakGoal> => {
+      const pickedDate = moment(state.pickedDate)
+      const streaksFit = state.streakGoals.reduce(
+        (acc: Array<StreakGoal>, cur: StreakGoal) => {
+          const start = moment(cur.start)
+          const end = moment(cur.end)
+          if (pickedDate.isBetween(
+            start,
+            end,
+            undefined,
+            '[]',
+          )) {
+            acc.push(cur)
+          }
+          return acc
+        }, [],
+      )
+      return streaksFit
+    },
+    getSingleDateGoal: (
+      state, getters,
+    ): Array<SingleDateGoal> => {
+      const streaksFit: Array<StreakGoal> = getters
+        .getStreakListInPickedDate
+      const result = state.settingGoals.map(setting => {
+        let settingMod: SingleDateGoal = {
+          ..._.omit(setting, 'id'),
+          settingId: setting.id,
+        }
+        const streak = streaksFit.find(
+          stre => stre.goalSettingId === setting.id,
+        )
+        if (streak) {
+          const streakCount = moment(state.pickedDate)
+            .diff(moment(streak.start), 'day') + 1
+          settingMod = {
+            ...settingMod,
+            streakId: streak.id,
+            start: streak.start,
+            streakCount,
+          }
+        }
+        return settingMod
+      })
+      return result
     },
   },
   actions: {
-    async getListDayData({ commit }) {
+    async initGoalSettingListener({ commit }) {
       try {
-        const querySnapshot = await dayColl.get()
-        const dateDatas: Array<DateData> = []
-        querySnapshot.forEach(doc => {
-          const dt = convertDateData(doc)
-          dateDatas.push(dt)
-        })
-        commit(SET_DATE_DATAS, dateDatas)
-      } catch (error) {
-        console.log('error', error)
-      }
-    },
-    async initListDayDataListener({ commit }) {
-      try {
-        dayColl.onSnapshot(snapShot => {
+        goalSettingColl.onSnapshot(snapShot => {
           snapShot.docChanges().forEach(change => {
             const { doc } = change
-            const dateData: DateData = convertDateData(doc)
+            const data = {
+              id: doc.id,
+              ...doc.data(),
+            }
             if (change.type === 'added') {
-              commit(ADD_DATE_DATA, dateData)
+              commit(ADD_SETTING_DATA, data)
             }
             if (change.type === 'modified') {
-              commit(EDIT_DATE_DATA, dateData)
+              commit(EDIT_SETTING_DATA, data)
             }
             if (change.type === 'removed') {
-              commit(DELETE_DATE_DATA, dateData[DATE])
+              commit(DELETE_SETTING_DATA, doc.id)
             }
           })
         })
@@ -128,33 +200,23 @@ export default new Vuex.Store({
         console.log('error', error)
       }
     },
-    async getSettingGoals({ commit }) {
+    async initGoalStreakListener({ commit }) {
       try {
-        const querySnapshot = await goalColl.get()
-        const goalSettings: Array<GoalSetting> = []
-        querySnapshot.forEach(doc => {
-          const dt = convertGoalSetting(doc)
-          goalSettings.push(dt)
-        })
-        commit(SET_GOAL_SETTINGS, goalSettings)
-      } catch (error) {
-        console.log('error', error)
-      }
-    },
-    async initSettingGoalListener({ commit }) {
-      try {
-        goalColl.onSnapshot(snapShot => {
+        goalStreakColl.onSnapshot(snapShot => {
           snapShot.docChanges().forEach(change => {
-            console.log('docGoalSettings changed')
-            const goalData: GoalSetting = convertGoalSetting(change.doc)
+            const { doc } = change
+            const data = {
+              id: doc.id,
+              ...doc.data(),
+            }
             if (change.type === 'added') {
-              commit(ADD_GOAL_SETTINGS, goalData)
+              commit(ADD_STREAK_DATA, data)
             }
             if (change.type === 'modified') {
-              commit(EDIT_GOAL_SETTINGS, goalData)
+              commit(EDIT_STREAK_DATA, data)
             }
             if (change.type === 'removed') {
-              commit(DELETE_GOAL_SETTINGS, change.doc.id)
+              commit(DELETE_STREAK_DATA, doc.id)
             }
           })
         })

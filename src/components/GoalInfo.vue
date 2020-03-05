@@ -8,9 +8,12 @@
             <v-icon class='caption'>{{goalStr}}</v-icon>
         </v-btn>
       </v-flex>
-      <v-flex xs1 class='text-xs-left'>
-        {{streak_num}}
+      <v-flex v-show="streakId" xs1>
+        <v-label color="green">{{streakCount}}</v-label>
       </v-flex>
+      <!-- <v-flex v-show="streakId" xs3>
+        {{start}}
+      </v-flex> -->
       <v-flex xs5></v-flex>
     </v-layout>
   </main>
@@ -18,39 +21,28 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-// import { addEditDateData } from '@/api'
 import {
-  addEditDateData,
+  deleteStreak,
+  addStreak,
 } from '@/api'
-import {
-  ID,
-  NAME,
-  ICON,
-  START_STREAK,
-  STREAK_NUM,
-  IS_END_STREAK,
-} from '@/constants'
-import { GoalData } from '../store/interface-object'
 
 export default Vue.extend({
   name: 'GoalInfo',
   methods: {
     toggleStt() {
-      const goalDataEdit: GoalData = {
-        [ID]: this.id,
-        [START_STREAK]: this.start_streak,
-        [STREAK_NUM]: Number(!this.streak_num),
-        [IS_END_STREAK]: this.is_end_streak,
+      if (this.streakId) {
+        deleteStreak(this.pickedDate, this.streakId)
+      } else {
+        addStreak(this.pickedDate, this.settingId)
       }
-      addEditDateData(this.pickedDate, goalDataEdit)
     },
   },
   computed: {
     sttColor(): string {
-      return this[STREAK_NUM] > 0 ? 'green' : 'red'
+      return this.streakCount > 0 ? 'green' : 'red'
     },
     goalStr(): string {
-      return this[ICON]
+      return this.icon
     },
   },
   props: {
@@ -58,29 +50,29 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    [ID]: {
+    settingId: {
       type: String,
       required: true,
     },
-    [NAME]: {
+    name: {
       type: String,
       required: true,
     },
-    [ICON]: {
+    icon: {
       type: String,
       required: true,
     },
-    [START_STREAK]: {
+    streakId: {
       type: String,
-      default: '',
+      default: null,
     },
-    [STREAK_NUM]: {
+    start: {
+      type: String,
+      default: null,
+    },
+    streakCount: {
       type: Number,
-      default: 0,
-    },
-    [IS_END_STREAK]: {
-      type: Boolean,
-      default: false,
+      default: null,
     },
   },
 })

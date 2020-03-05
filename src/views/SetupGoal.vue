@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="goalSettings"
+    :items="settingGoals"
     sort-by="calories"
     class="elevation-1"
   >
@@ -16,7 +16,11 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
+            <v-btn color="primary" dark class="mb-2"
+              v-on="on"
+            >
+              New Item
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -27,10 +31,12 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
+                    <v-text-field v-model="editedItem.name"
+                      label="Name"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.icon" label="Icon"></v-text-field>
+                    <v-text-field v-model="editedItem.icon"
+                      label="Icon"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -38,8 +44,10 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+              <v-btn color="blue darken-1" text
+                @click="close">Cancel</v-btn>
+              <v-btn color="blue darken-1" text
+                @click="save">Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -67,8 +75,7 @@
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { addGoalSetting, editGoalSetting } from '@/api'
-import { NAME, ICON, ID } from '../constants'
-import { GoalSetting } from '../store/interface-object'
+import { SettingGoal } from '../store/interface-object'
 
 export default Vue.extend({
   data: () => ({
@@ -84,21 +91,22 @@ export default Vue.extend({
     ],
     editedIndex: '',
     editedItem: {
-      [ID]: '',
-      [NAME]: '',
-      [ICON]: '',
+      id: '',
+      name: '',
+      icon: '',
     },
     defaultItem: {
-      [ID]: '',
-      [NAME]: '',
-      [ICON]: '',
+      id: '',
+      name: '',
+      icon: '',
     },
   }),
 
   computed: {
-    ...mapState(['goalSettings']),
+    ...mapState(['settingGoals']),
     formTitle() {
-      return this.editedIndex === '' ? 'New Item' : 'Edit Item'
+      return this.editedIndex === ''
+        ? 'New Item' : 'Edit Item'
     },
   },
 
@@ -111,16 +119,11 @@ export default Vue.extend({
   },
 
   methods: {
-    editItem(item: GoalSetting) {
-      this.editedIndex = item[ID]
+    editItem(item: SettingGoal) {
+      this.editedIndex = item.id
       this.editedItem = { ...item }
       this.dialog = true
     },
-
-    // deleteItem(item) {
-    // const index = this.desserts.indexOf(item)
-    // confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
-    // },
 
     close() {
       this.dialog = false
