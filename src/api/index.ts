@@ -91,3 +91,9 @@ export const editGoalSetting = async (
   }
   goalSettingColl.doc(data.id).set(editData)
 }
+
+export const deleteGoalSetting = async (
+  data: SettingGoal,
+) => {
+  goalSettingColl.doc(data.id).delete()
+}

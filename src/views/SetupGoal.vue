@@ -61,12 +61,12 @@
       >
         edit
       </v-icon>
-      <!-- <v-icon
+      <v-icon
         small
         @click="deleteItem(item)"
       >
         delete
-      </v-icon> -->
+      </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -74,7 +74,11 @@
 <script lang='ts'>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { addGoalSetting, editGoalSetting } from '@/api'
+import {
+  addGoalSetting,
+  editGoalSetting,
+  deleteGoalSetting,
+} from '@/api'
 import { SettingGoal } from '../store/interface-object'
 
 export default Vue.extend({
@@ -124,7 +128,9 @@ export default Vue.extend({
       this.editedItem = { ...item }
       this.dialog = true
     },
-
+    async deleteItem(item: SettingGoal) {
+      await deleteGoalSetting(item)
+    },
     close() {
       this.dialog = false
       setTimeout(() => {
@@ -132,7 +138,6 @@ export default Vue.extend({
         this.editedIndex = ''
       }, 300)
     },
-
     async save() {
       if (this.editedIndex !== '') {
         await editGoalSetting(this.editedItem)

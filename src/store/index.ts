@@ -119,13 +119,6 @@ export default new Vuex.Store({
         prevStreak,
       }
     },
-    // state.streakGoals
-    //   .find(item => moment(date).isBetween(
-    //     moment(item.start),
-    //     moment(item.end),
-    //     undefined,
-    //     '[]',
-    //   )),
     getStreakListInPickedDate: (
       state,
     ): Array<StreakGoal> => {
