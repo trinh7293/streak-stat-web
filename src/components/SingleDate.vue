@@ -3,7 +3,7 @@
     <v-layout row wrap >
       <v-flex
         xs2
-        v-for="goal in getSingleDateGoal"
+        v-for="goal in getPickedDateGoals"
         :key="goal.settingId"
       >
       <!-- <v-flex
@@ -32,7 +32,7 @@ export default Vue.extend({
     GoalInfo,
   },
   computed: {
-    ...mapGetters(['getSingleDateGoal']),
+    ...mapGetters(['getPickedDateGoals']),
     ...mapState(['pickedDate']),
   },
   data: () => ({

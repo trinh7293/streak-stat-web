@@ -1,27 +1,42 @@
 export interface StateType {
   pickedDate: string;
-  settingGoals: Array<SettingGoal>;
-  streakGoals: Array<StreakGoal>;
+  settingGoals: Record<string, SettingGoal>;
+  goals: Array<Goal>;
 }
 
 export interface SettingGoal {
-  id: string;
   name: string;
   icon: string;
 }
 
-export interface StreakGoal {
-  id: string;
-  goalSettingId: string;
-  start: string;
-  end: string;
-}
-
-export interface SingleDateGoal {
+export interface SettingGoalInArray {
   settingId: string;
   name: string;
   icon: string;
-  streakId?: string;
+}
+
+export interface Goal {
+  goalId: string;
+  settingId: string;
+  date: string;
+  start: string;
+  end: string;
+  streakCount: number;
+}
+
+
+export interface NewGoal {
+  goalId: string;
+  settingId: string;
+  date: string;
+}
+
+export interface SingleDateGoals {
+  goalId: string;
+  settingId: string;
+  name: string;
+  icon: string;
   start?: string;
+  end?: string;
   streakCount?: number;
 }

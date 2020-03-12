@@ -2,8 +2,8 @@
 // required and must be listed first
 import * as firebase from 'firebase/app'
 import {
-  GOAL_STREAK_COLLECTION,
   GOAL_SETTING_COLLECTION,
+  GOALS_COLLECTION,
 } from '@/constants'
 // Add the Firebase products that you want to use
 import 'firebase/firestore'
@@ -26,7 +26,7 @@ firebase.initializeApp(firebaseConfig)
 export const firestore = firebase.firestore()
 export const functions = firebase.functions()
 
-export const goalStreakColl = firestore
-  .collection(GOAL_STREAK_COLLECTION)
+export const goalsColl = firestore
+  .collection(GOALS_COLLECTION)
 export const goalSettingColl = firestore
   .collection(GOAL_SETTING_COLLECTION)

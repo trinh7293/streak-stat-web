@@ -8,10 +8,10 @@
             <v-icon class='caption'>{{goalStr}}</v-icon>
         </v-btn>
       </v-flex>
-      <v-flex v-show="streakId" xs1>
+      <v-flex v-show="goalId" xs1>
         <v-label color="green">{{streakCount}}</v-label>
       </v-flex>
-      <!-- <v-flex v-show="streakId" xs3>
+      <!-- <v-flex v-show="goalId" xs3>
         {{start}}
       </v-flex> -->
       <v-flex xs5></v-flex>
@@ -22,18 +22,18 @@
 <script lang='ts'>
 import Vue from 'vue'
 import {
-  deleteStreak,
-  addStreak,
+  deleteGoal,
+  addGoal,
 } from '@/api'
 
 export default Vue.extend({
   name: 'GoalInfo',
   methods: {
     toggleStt() {
-      if (this.streakId) {
-        deleteStreak(this.pickedDate, this.streakId)
+      if (this.goalId) {
+        deleteGoal(this.goalId)
       } else {
-        addStreak(this.pickedDate, this.settingId)
+        addGoal(this.pickedDate, this.settingId)
       }
     },
   },
@@ -62,11 +62,15 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    streakId: {
+    goalId: {
       type: String,
       default: null,
     },
     start: {
+      type: String,
+      default: null,
+    },
+    end: {
       type: String,
       default: null,
     },

@@ -15,7 +15,7 @@ import Vue from 'vue'
 export default Vue.extend({
   created() {
     this.$store.dispatch('initGoalSettingListener')
-    this.$store.dispatch('initGoalStreakListener')
+    this.$store.dispatch('initDayDataListener')
   },
 })
 </script>

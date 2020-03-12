@@ -1,76 +1,36 @@
 import {
-  goalStreakColl, goalSettingColl,
+  goalSettingColl,
+  goalsColl,
 } from '@/firebase_backend'
-import { getAdjacentDay } from '@/utils/dateTimeHandle'
-import store from '@/store'
 import {
-  StreakGoal,
   SettingGoal,
+  SettingGoalInArray,
 } from '@/store/interface-object'
 
-export const deleteStreak = async (
-  pickedDate: string,
-  streakId: string,
-) => {
+export const deleteGoal = async (goalId: string) => {
   try {
-    const streak: StreakGoal | undefined = store
-      .getters.getStreakById(streakId)
-    if (!streak) {
-      throw new Error(
-        'deleteStreak: Document does not exist!',
-      )
-    }
-    const { nextDay, prevDay } = getAdjacentDay(pickedDate)
-    const { start, end } = streak
-    const streakRef = goalStreakColl.doc(streakId)
-    if (start === end) {
-      await streakRef.delete()
-    } else if (pickedDate === start) {
-      await streakRef.update({ start: nextDay })
-    } else if (pickedDate === end) {
-      await streakRef.update({ end: prevDay })
-    } else {
-      await streakRef.update({ end: prevDay })
-      const newStreak = {
-        goalSettingId: streak.goalSettingId,
-        start: nextDay,
-        end,
-      }
-      await goalStreakColl.add(newStreak)
-    }
+    await goalsColl.doc(goalId).delete()
+    console.log('successfully delete goal: ', goalId)
   } catch (error) {
-    console.log('deleteStreak failed: ', error)
+    console.log('error in delete goal: ', error)
   }
 }
 
-
-export const addStreak = async (
-  pickedDate: string,
-  goalSettingId: string,
+export const addGoal = async (
+  date: string, settingId: string,
 ) => {
-  const {
-    prevStreak,
-    nextStreak,
-  } = store.getters
-    .getAdjacentSreaks(pickedDate, goalSettingId)
-  if (prevStreak && nextStreak) {
-    const prevRef = goalStreakColl.doc(prevStreak.id)
-    const nextRef = goalStreakColl.doc(nextStreak.id)
-    await prevRef.update({ end: nextStreak.end })
-    await nextRef.delete()
-  } else if (prevStreak) {
-    const prevRef = goalStreakColl.doc(prevStreak.id)
-    await prevRef.update({ end: pickedDate })
-  } else if (nextStreak) {
-    const nextRef = goalStreakColl.doc(nextStreak.id)
-    await nextRef.update({ start: pickedDate })
-  } else {
-    const newStreak = {
-      goalSettingId,
-      start: pickedDate,
-      end: pickedDate,
-    }
-    await goalStreakColl.add(newStreak)
+  try {
+    await goalsColl.add({
+      date,
+      settingId,
+    })
+    console.log(
+      'successfully add goal: ',
+      date,
+      settingId,
+    )
+  } catch (error) {
+    console.log('error in add goal: ', error)
   }
 }
 
@@ -83,17 +43,17 @@ export const addGoalSetting = async (data: SettingGoal) => {
 }
 
 export const editGoalSetting = async (
-  data: SettingGoal,
+  data: SettingGoalInArray,
 ) => {
   const editData = {
     name: data.name,
     icon: data.icon,
   }
-  goalSettingColl.doc(data.id).set(editData)
+  goalSettingColl.doc(data.settingId).set(editData)
 }
 
 export const deleteGoalSetting = async (
-  data: SettingGoal,
+  data: SettingGoalInArray,
 ) => {
-  goalSettingColl.doc(data.id).delete()
+  goalSettingColl.doc(data.settingId).delete()
 }

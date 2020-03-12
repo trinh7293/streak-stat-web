@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="settingGoals"
+    :items="getSettingArray"
     sort-by="calories"
     class="elevation-1"
   >
@@ -73,13 +73,15 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import {
   addGoalSetting,
   editGoalSetting,
   deleteGoalSetting,
 } from '@/api'
-import { SettingGoal } from '../store/interface-object'
+import {
+  SettingGoalInArray,
+} from '../store/interface-object'
 
 export default Vue.extend({
   data: () => ({
@@ -95,19 +97,19 @@ export default Vue.extend({
     ],
     editedIndex: '',
     editedItem: {
-      id: '',
+      settingId: '',
       name: '',
       icon: '',
     },
     defaultItem: {
-      id: '',
+      settingId: '',
       name: '',
       icon: '',
     },
   }),
 
   computed: {
-    ...mapState(['settingGoals']),
+    ...mapGetters(['getSettingArray']),
     formTitle() {
       return this.editedIndex === ''
         ? 'New Item' : 'Edit Item'
@@ -123,12 +125,12 @@ export default Vue.extend({
   },
 
   methods: {
-    editItem(item: SettingGoal) {
-      this.editedIndex = item.id
+    editItem(item: SettingGoalInArray) {
+      this.editedIndex = item.settingId
       this.editedItem = { ...item }
       this.dialog = true
     },
-    async deleteItem(item: SettingGoal) {
+    async deleteItem(item: SettingGoalInArray) {
       await deleteGoalSetting(item)
     },
     close() {
