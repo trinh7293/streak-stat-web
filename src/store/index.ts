@@ -12,7 +12,7 @@ import {
   SettingGoalInArray,
 } from '@/store/interface-object'
 import {
-  goalSettingColl,
+  dateCollGroup,
   goalsColl,
 } from '@/firebase_backend'
 import {
@@ -56,9 +56,9 @@ export default new Vuex.Store({
     getSettingArray(state): Array<SettingGoalInArray> {
       return Object.keys(state.settingGoals)
         .map(
-          settingId => ({
-            settingId,
-            ...state.settingGoals[settingId],
+          goalId => ({
+            goalId,
+            ...state.settingGoals[goalId],
           }),
         )
     },
@@ -71,8 +71,8 @@ export default new Vuex.Store({
       const settingArray = getters.getSettingArray
       const result = Object.values(
         _.merge(
-          _.keyBy(_.cloneDeep(settingArray), 'settingId'),
-          _.keyBy(_.cloneDeep(goalsByDate), 'settingId'),
+          _.keyBy(_.cloneDeep(settingArray), 'goalId'),
+          _.keyBy(_.cloneDeep(goalsByDate), 'goalId'),
         ),
       )
       return result
@@ -81,7 +81,7 @@ export default new Vuex.Store({
   actions: {
     async initGoalSettingListener({ commit }) {
       try {
-        goalSettingColl.onSnapshot(snapShot => {
+        goalsColl.onSnapshot(snapShot => {
           snapShot.docChanges().forEach(change => {
             const { doc } = change
             const data = {
@@ -106,15 +106,14 @@ export default new Vuex.Store({
     },
     async initDayDataListener({ state, commit }) {
       try {
-        goalsColl.onSnapshot(snapShot => {
+        dateCollGroup.onSnapshot(snapShot => {
           snapShot.docChanges().forEach(change => {
             const { doc } = change
             const docData = doc.data()
-            const { settingId, date } = docData
+            const { goalId } = docData
             const docChanged = {
-              goalId: doc.id,
-              settingId,
-              date,
+              date: doc.id,
+              goalId,
             }
             const { goals } = state
             if (change.type === 'added') {

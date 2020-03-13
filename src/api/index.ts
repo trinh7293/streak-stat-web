@@ -1,15 +1,20 @@
 import {
-  goalSettingColl,
   goalsColl,
 } from '@/firebase_backend'
 import {
   SettingGoal,
   SettingGoalInArray,
 } from '@/store/interface-object'
+import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
 
-export const deleteGoal = async (goalId: string) => {
+export const deleteGoal = async (
+  date: string, goalId: string,
+) => {
   try {
-    await goalsColl.doc(goalId).delete()
+    await goalsColl.doc(goalId)
+      .collection(GOAL_DATE_SUBCOLLECTION)
+      .doc(date)
+      .delete()
     console.log('successfully delete goal: ', goalId)
   } catch (error) {
     console.log('error in delete goal: ', error)
@@ -17,17 +22,18 @@ export const deleteGoal = async (goalId: string) => {
 }
 
 export const addGoal = async (
-  date: string, settingId: string,
+  date: string, goalId: string,
 ) => {
   try {
-    await goalsColl.add({
-      date,
-      settingId,
-    })
+    await goalsColl.doc(goalId)
+      .collection(GOAL_DATE_SUBCOLLECTION)
+      .doc(date).set({
+        goalId,
+      })
     console.log(
       'successfully add goal: ',
       date,
-      settingId,
+      goalId,
     )
   } catch (error) {
     console.log('error in add goal: ', error)
@@ -39,7 +45,7 @@ export const addGoalSetting = async (data: SettingGoal) => {
     name: data.name,
     icon: data.icon,
   }
-  goalSettingColl.add(addData)
+  goalsColl.add(addData)
 }
 
 export const editGoalSetting = async (
@@ -49,11 +55,11 @@ export const editGoalSetting = async (
     name: data.name,
     icon: data.icon,
   }
-  goalSettingColl.doc(data.settingId).set(editData)
+  goalsColl.doc(data.goalId).set(editData)
 }
 
 export const deleteGoalSetting = async (
   data: SettingGoalInArray,
 ) => {
-  goalSettingColl.doc(data.settingId).delete()
+  goalsColl.doc(data.goalId).delete()
 }

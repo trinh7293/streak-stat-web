@@ -30,10 +30,10 @@ export default Vue.extend({
   name: 'GoalInfo',
   methods: {
     toggleStt() {
-      if (this.goalId) {
-        deleteGoal(this.goalId)
+      if (this.streakCount) {
+        deleteGoal(this.pickedDate, this.goalId)
       } else {
-        addGoal(this.pickedDate, this.settingId)
+        addGoal(this.pickedDate, this.goalId)
       }
     },
   },
@@ -50,7 +50,7 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    settingId: {
+    goalId: {
       type: String,
       required: true,
     },
@@ -61,10 +61,6 @@ export default Vue.extend({
     icon: {
       type: String,
       required: true,
-    },
-    goalId: {
-      type: String,
-      default: null,
     },
     start: {
       type: String,

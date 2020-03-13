@@ -97,12 +97,12 @@ export default Vue.extend({
     ],
     editedIndex: '',
     editedItem: {
-      settingId: '',
+      goalId: '',
       name: '',
       icon: '',
     },
     defaultItem: {
-      settingId: '',
+      goalId: '',
       name: '',
       icon: '',
     },
@@ -126,7 +126,7 @@ export default Vue.extend({
 
   methods: {
     editItem(item: SettingGoalInArray) {
-      this.editedIndex = item.settingId
+      this.editedIndex = item.goalId
       this.editedItem = { ...item }
       this.dialog = true
     },

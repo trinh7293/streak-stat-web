@@ -2,8 +2,7 @@
 // required and must be listed first
 import * as firebase from 'firebase/app'
 import {
-  GOAL_SETTING_COLLECTION,
-  GOALS_COLLECTION,
+  GOALS_COLLECTION, GOAL_DATE_SUBCOLLECTION,
 } from '@/constants'
 // Add the Firebase products that you want to use
 import 'firebase/firestore'
@@ -28,5 +27,5 @@ export const functions = firebase.functions()
 
 export const goalsColl = firestore
   .collection(GOALS_COLLECTION)
-export const goalSettingColl = firestore
-  .collection(GOAL_SETTING_COLLECTION)
+export const dateCollGroup = firestore
+  .collectionGroup(GOAL_DATE_SUBCOLLECTION)

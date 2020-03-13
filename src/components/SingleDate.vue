@@ -4,12 +4,12 @@
       <v-flex
         xs2
         v-for="goal in getPickedDateGoals"
-        :key="goal.settingId"
+        :key="goal.goalId"
       >
       <!-- <v-flex
         xs12
         v-for="goal in getPickedDateDataSample"
-        :key="goal.settingId"
+        :key="goal.goalId"
       > -->
         <GoalInfo
           v-bind='goal'
@@ -38,7 +38,7 @@ export default Vue.extend({
   data: () => ({
     getPickedDateDataSample: [
       {
-        settingId: 'settingId-1',
+        goalId: 'goalId-1',
         name: 'Weakup',
         icon: 'We',
         streakId: 'streakId1',
@@ -46,7 +46,7 @@ export default Vue.extend({
         streakCount: 5,
       },
       {
-        settingId: 'settingId-2',
+        goalId: 'goalId-2',
         name: 'Running',
         icon: 'Ru',
         streakId: 'streakId2',
@@ -54,7 +54,7 @@ export default Vue.extend({
         streakCount: 5,
       },
       {
-        settingId: '3',
+        goalId: '3',
         name: 'Reading',
         icon: 'Re',
       },

@@ -6,16 +6,13 @@ import { Goal, NewGoal } from './interface-object'
 export default class ChangeGoals {
   goals: Goal[]
 
-  goalId: string
-
-  settingId: string
-
   date: string
+
+  goalId: string
 
   constructor(goals: Array<Goal>, docChanged: NewGoal) {
     this.goals = goals
     this.goalId = docChanged.goalId
-    this.settingId = docChanged.settingId
     this.date = docChanged.date
   }
 
@@ -33,16 +30,15 @@ export default class ChangeGoals {
       const newDocStreakCount = moment(this.date)
         .diff(moment(newStart), 'day') + 1
       const newDoc: Goal = {
-        goalId: this.goalId,
-        settingId: this.settingId,
         date: this.date,
+        goalId: this.goalId,
         start: newStart,
         end: newEnd,
         streakCount: newDocStreakCount,
       }
       newGoals = [
         ...this.goals.map(g => {
-          if (g.settingId !== this.settingId) {
+          if (g.goalId !== this.goalId) {
             return g
           }
           if (
@@ -69,16 +65,15 @@ export default class ChangeGoals {
       const oldStart = nextStreak.start
       const newStart = this.date
       const newDoc = {
-        goalId: this.goalId,
-        settingId: this.settingId,
         date: this.date,
+        goalId: this.goalId,
         start: newStart,
         end: nextStreak.end,
         streakCount: 1,
       }
       newGoals = [
         ...this.goals.map(g => {
-          if (g.settingId !== this.settingId) {
+          if (g.goalId !== this.goalId) {
             return g
           }
           if (g.start === oldStart) {
@@ -96,9 +91,8 @@ export default class ChangeGoals {
       const oldEnd = prevStreak.end
       const newEnd = this.date
       const newDoc = {
-        goalId: this.goalId,
-        settingId: this.settingId,
         date: this.date,
+        goalId: this.goalId,
         start: prevStreak.start,
         end: newEnd,
         streakCount: moment(this.date)
@@ -106,7 +100,7 @@ export default class ChangeGoals {
       }
       newGoals = [
         ...this.goals.map(g => {
-          if (g.settingId !== this.settingId) {
+          if (g.goalId !== this.goalId) {
             return g
           }
           if (g.end === oldEnd) {
@@ -121,9 +115,8 @@ export default class ChangeGoals {
       ]
     } else {
       const newDoc = {
-        goalId: this.goalId,
-        settingId: this.settingId,
         date: this.date,
+        goalId: this.goalId,
         start: this.date,
         end: this.date,
         streakCount: 1,
@@ -138,7 +131,8 @@ export default class ChangeGoals {
 
   deleteGoal() {
     const goalDelete = this.goals.find(
-      item => item.goalId === this.goalId,
+      item => item.goalId === this.goalId
+        && item.date === this.date,
     )
     if (!goalDelete) return this.goals
     const {
@@ -147,7 +141,8 @@ export default class ChangeGoals {
       streakCount,
     } = goalDelete
     const newGoals = this.goals.filter(
-      item => item.goalId !== this.goalId,
+      item => item.goalId !== this.goalId
+        || item.date !== this.date,
     )
     const {
       nextDay,
@@ -155,7 +150,7 @@ export default class ChangeGoals {
     } = getAdjacentDay(this.date)
     return newGoals.map(item => {
       if (
-        item.settingId === this.settingId
+        item.goalId === this.goalId
         && item.start === start
         && item.end === end
       ) {
@@ -183,11 +178,11 @@ export default class ChangeGoals {
       prevDay,
     } = getAdjacentDay(this.date)
     const nextStreak = _.find(this.goals, {
-      settingId: this.settingId,
+      goalId: this.goalId,
       start: nextDay,
     })
     const prevStreak = _.find(this.goals, {
-      settingId: this.settingId,
+      goalId: this.goalId,
       end: prevDay,
     })
     return {

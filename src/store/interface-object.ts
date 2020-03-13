@@ -10,15 +10,14 @@ export interface SettingGoal {
 }
 
 export interface SettingGoalInArray {
-  settingId: string;
+  goalId: string;
   name: string;
   icon: string;
 }
 
 export interface Goal {
-  goalId: string;
-  settingId: string;
   date: string;
+  goalId: string;
   start: string;
   end: string;
   streakCount: number;
@@ -26,14 +25,12 @@ export interface Goal {
 
 
 export interface NewGoal {
-  goalId: string;
-  settingId: string;
   date: string;
+  goalId: string;
 }
 
 export interface SingleDateGoals {
   goalId: string;
-  settingId: string;
   name: string;
   icon: string;
   start?: string;
