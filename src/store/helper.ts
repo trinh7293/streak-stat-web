@@ -42,7 +42,12 @@ export default class ChangeGoals {
       }
       newGoals = [
         ...this.goals.map(g => {
-          if (g.end === oldEnd) {
+          if (g.settingId !== this.settingId) {
+            return g
+          }
+          if (
+            g.end === oldEnd
+          ) {
             return {
               ...g,
               end: newEnd,
@@ -73,6 +78,9 @@ export default class ChangeGoals {
       }
       newGoals = [
         ...this.goals.map(g => {
+          if (g.settingId !== this.settingId) {
+            return g
+          }
           if (g.start === oldStart) {
             return {
               ...g,
@@ -98,6 +106,9 @@ export default class ChangeGoals {
       }
       newGoals = [
         ...this.goals.map(g => {
+          if (g.settingId !== this.settingId) {
+            return g
+          }
           if (g.end === oldEnd) {
             return {
               ...g,
@@ -145,8 +156,8 @@ export default class ChangeGoals {
     return newGoals.map(item => {
       if (
         item.settingId === this.settingId
-          && item.start === start
-          && item.end === end
+        && item.start === start
+        && item.end === end
       ) {
         if (item.streakCount < streakCount) {
           return {
