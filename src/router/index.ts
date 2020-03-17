@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-// import About from '../views/About.vue'
+import GoalsManagement from '@/views/GoalsManagement.vue'
+import Home from '@/views/Home.vue'
+import About from '@/views/About.vue'
 // import TestTime from '../views/TestTime.vue'
-import SetupGoal from '../views/SetupGoal.vue'
 
 Vue.use(VueRouter)
 
@@ -16,19 +16,19 @@ const routes = [
     component: Home,
   },
   {
-    path: '/setup-goal',
-    name: 'SetupGoal',
+    path: '/goals',
+    name: 'GoalsManagement',
     // component: Home,
     // TODO edit test
-    component: SetupGoal,
+    component: GoalsManagement,
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // component: Home,
-  //   // TODO edit test
-  //   component: About,
-  // },
+  {
+    path: '/about',
+    name: 'About',
+    // component: Home,
+    // TODO edit test
+    component: About,
+  },
   // {
   //   path: '/test',
   //   name: 'Test',

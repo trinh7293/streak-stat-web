@@ -5,15 +5,12 @@
         <v-btn class='mx-2' fab dark small
           v-bind:color='sttColor'
           v-on:click='toggleStt'>
-            <v-icon class='caption'>{{goalStr}}</v-icon>
+            <v-icon class='caption'>{{name}}</v-icon>
         </v-btn>
       </v-flex>
       <v-flex v-show="goalId" xs1>
         <v-label color="green">{{streakCount}}</v-label>
       </v-flex>
-      <!-- <v-flex v-show="goalId" xs3>
-        {{start}}
-      </v-flex> -->
       <v-flex xs5></v-flex>
     </v-layout>
   </main>
@@ -40,9 +37,6 @@ export default Vue.extend({
   computed: {
     sttColor(): string {
       return this.streakCount > 0 ? 'green' : 'red'
-    },
-    goalStr(): string {
-      return this.icon
     },
   },
   props: {

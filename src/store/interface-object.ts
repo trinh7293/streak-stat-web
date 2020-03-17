@@ -6,13 +6,13 @@ export interface StateType {
 
 export interface SettingGoal {
   name: string;
-  icon: string;
+  description: string;
 }
 
 export interface SettingGoalInArray {
   goalId: string;
   name: string;
-  icon: string;
+  description: string;
 }
 
 export interface Goal {
@@ -32,7 +32,7 @@ export interface NewGoal {
 export interface SingleDateGoals {
   goalId: string;
   name: string;
-  icon: string;
+  description: string;
   start?: string;
   end?: string;
   streakCount?: number;

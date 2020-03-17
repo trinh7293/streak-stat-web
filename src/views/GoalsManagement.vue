@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="getSettingArray"
+    :items="getPickedDateGoals"
     sort-by="calories"
     class="elevation-1"
   >
@@ -35,8 +35,9 @@
                       label="Name"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.icon"
-                      label="Icon"></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.description"
+                      label="description"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -59,13 +60,13 @@
         class="mr-2"
         @click="editItem(item)"
       >
-        edit
+        mdi-pencil
       </v-icon>
       <v-icon
         small
         @click="deleteItem(item)"
       >
-        delete
+        mdi-delete
       </v-icon>
     </template>
   </v-data-table>
@@ -92,24 +93,25 @@ export default Vue.extend({
         align: 'start',
         value: 'name',
       },
-      { text: 'Icon', value: 'icon' },
+      { text: 'Description', value: 'description' },
+      { text: 'Current streak', value: 'streakCount' },
       { text: 'Actions', value: 'action', sortable: false },
     ],
     editedIndex: '',
     editedItem: {
       goalId: '',
       name: '',
-      icon: '',
+      description: '',
     },
     defaultItem: {
       goalId: '',
       name: '',
-      icon: '',
+      description: '',
     },
   }),
 
   computed: {
-    ...mapGetters(['getSettingArray']),
+    ...mapGetters(['getPickedDateGoals']),
     formTitle() {
       return this.editedIndex === ''
         ? 'New Item' : 'Edit Item'

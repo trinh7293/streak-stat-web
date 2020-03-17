@@ -43,7 +43,7 @@ export const addGoal = async (
 export const addGoalSetting = async (data: SettingGoal) => {
   const addData = {
     name: data.name,
-    icon: data.icon,
+    description: data.description,
   }
   goalsColl.add(addData)
 }
@@ -53,7 +53,7 @@ export const editGoalSetting = async (
 ) => {
   const editData = {
     name: data.name,
-    icon: data.icon,
+    description: data.description,
   }
   goalsColl.doc(data.goalId).set(editData)
 }
@@ -63,3 +63,14 @@ export const deleteGoalSetting = async (
 ) => {
   goalsColl.doc(data.goalId).delete()
 }
+
+// export const editSettingChangeName = async () => {
+//   const QuerySnapshot = await goalsColl.get()
+//   QuerySnapshot.forEach(async snapshot => {
+//     const data = snapshot.data()
+//     goalsColl.doc(snapshot.id).set({
+//       name: data.icon,
+//       description: data.name,
+//     })
+//   })
+// }

@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap >
       <v-flex
-        xs2
+        xs3
         v-for="goal in getPickedDateGoals"
         :key="goal.goalId"
       >
@@ -40,7 +40,7 @@ export default Vue.extend({
       {
         goalId: 'goalId-1',
         name: 'Weakup',
-        icon: 'We',
+        description: 'We',
         streakId: 'streakId1',
         start: '2020-02-07',
         streakCount: 5,
@@ -48,7 +48,7 @@ export default Vue.extend({
       {
         goalId: 'goalId-2',
         name: 'Running',
-        icon: 'Ru',
+        description: 'Ru',
         streakId: 'streakId2',
         start: '2020-02-08',
         streakCount: 5,
@@ -56,7 +56,7 @@ export default Vue.extend({
       {
         goalId: '3',
         name: 'Reading',
-        icon: 'Re',
+        description: 'Re',
       },
     ],
   }),

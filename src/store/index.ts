@@ -68,13 +68,24 @@ export default new Vuex.Store({
       const goalsByDate = state.goals.filter(
         item => item.date === state.pickedDate,
       )
-      const settingArray = getters.getSettingArray
-      const result = Object.values(
-        _.merge(
-          _.keyBy(_.cloneDeep(settingArray), 'goalId'),
-          _.keyBy(_.cloneDeep(goalsByDate), 'goalId'),
-        ),
-      )
+      const settingArray:
+        Array<SettingGoalInArray> = getters.getSettingArray
+      const result:
+        Array<SingleDateGoals> = settingArray.map(
+          setting => {
+            const goal = goalsByDate.find(
+              g => g.goalId === setting.goalId,
+            )
+            if (!goal) return setting
+            const { start, end, streakCount } = goal
+            return {
+              ...setting,
+              start,
+              end,
+              streakCount,
+            }
+          },
+        )
       return result
     },
   },

@@ -1,18 +1,52 @@
 <template>
   <v-app>
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-      <router-link to="/setup-goal">Setup</router-link>
-    </div>
-    <router-view/>
+    <v-layout row wrap>
+      <v-flex xs4
+        v-for="route in routerDatas"
+        :key="route.url"
+      >
+        <NavigatorButton
+          :url='route.url'
+          :title='route.title'
+          :icon='route.icon'
+          :class="`d-flex justify-center mb-6`"
+        />
+      </v-flex>
+    <v-flex xs12>
+      <router-view/>
+    </v-flex>
+    </v-layout>
   </v-app>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import Vue from 'vue'
+import NavigatorButton from
+  '@/components/NavigatorButton.vue'
 
 export default Vue.extend({
+  components: {
+    NavigatorButton,
+  },
+  data: () => ({
+    routerDatas: [
+      {
+        url: '/',
+        title: 'Home',
+        icon: 'mdi-home',
+      },
+      {
+        url: '/about',
+        title: 'About',
+        icon: 'mdi-information',
+      },
+      {
+        url: '/goals',
+        title: 'Goals',
+        icon: 'mdi-star',
+      },
+    ],
+  }),
   created() {
     this.$store.dispatch('initGoalSettingListener')
     this.$store.dispatch('initDayDataListener')
@@ -20,7 +54,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
