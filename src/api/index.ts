@@ -2,6 +2,7 @@ import {
   goalsColl,
 } from '@/firebase_backend'
 import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
+import _ from 'lodash'
 
 export const deleteGoal = async (
   date: string, goalId: string,
@@ -37,20 +38,14 @@ export const addGoal = async (
 }
 
 export const addGoalSetting = async (data: SettingGoal) => {
-  const addData = {
-    name: data.name,
-    description: data.description,
-  }
+  const addData = _.omit(data, 'goalId')
   goalsColl.add(addData)
 }
 
 export const editGoalSetting = async (
   data: SettingGoalInArray,
 ) => {
-  const editData = {
-    name: data.name,
-    description: data.description,
-  }
+  const editData = _.omit(data, 'goalId')
   goalsColl.doc(data.goalId).set(editData)
 }
 

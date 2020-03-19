@@ -5,6 +5,11 @@
     sort-by="calories"
     class="elevation-1"
   >
+    <template v-slot:item.icon="{ item }">
+      <v-icon>
+        {{item.icon}}
+      </v-icon>
+    </template>
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>My CRUD</v-toolbar-title>
@@ -38,6 +43,9 @@
                     <v-text-field
                       v-model="editedItem.description"
                       label="description"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <IconPicker v-model="editedItem.icon" />
                   </v-col>
                 </v-row>
               </v-container>
@@ -81,7 +89,12 @@ import {
   deleteGoalSetting,
 } from '@/api'
 
+import IconPicker from '@/components/IconPicker.vue'
+
 export default Vue.extend({
+  components: {
+    IconPicker,
+  },
   data: () => ({
     dialog: false,
     headers: [
@@ -90,6 +103,7 @@ export default Vue.extend({
         align: 'start',
         value: 'name',
       },
+      { text: 'Icon', value: 'icon' },
       { text: 'Description', value: 'description' },
       { text: 'Current streak', value: 'streakCount' },
       { text: 'Actions', value: 'action', sortable: false },
@@ -99,11 +113,13 @@ export default Vue.extend({
       goalId: '',
       name: '',
       description: '',
+      icon: '',
     },
     defaultItem: {
       goalId: '',
       name: '',
       description: '',
+      icon: '',
     },
   }),
 

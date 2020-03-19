@@ -6,12 +6,14 @@ interface StateType {
 
 interface SettingGoal {
   name: string;
+  icon: string;
   description: string;
 }
 
 interface SettingGoalInArray {
   goalId: string;
   name: string;
+  icon: string;
   description: string;
 }
 
@@ -31,6 +33,7 @@ interface NewGoal {
 
 interface SingleDateGoals {
   goalId: string;
+  icon: string;
   name: string;
   description: string;
   start?: string;

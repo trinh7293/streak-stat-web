@@ -5,7 +5,7 @@
         <v-btn class='mx-2' fab dark small
           v-bind:color='sttColor'
           v-on:click='toggleStt'>
-            <v-icon class='caption'>{{name}}</v-icon>
+            <v-icon>{{icon}}</v-icon>
         </v-btn>
       </v-flex>
       <v-flex v-show="goalId" xs1>
