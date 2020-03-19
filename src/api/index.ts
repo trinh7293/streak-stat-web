@@ -1,10 +1,6 @@
 import {
   goalsColl,
 } from '@/firebase_backend'
-import {
-  SettingGoal,
-  SettingGoalInArray,
-} from '@/store/interface-object'
 import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
 
 export const deleteGoal = async (

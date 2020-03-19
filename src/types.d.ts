@@ -1,21 +1,21 @@
-export interface StateType {
+interface StateType {
   pickedDate: string;
   settingGoals: Record<string, SettingGoal>;
   goals: Array<Goal>;
 }
 
-export interface SettingGoal {
+interface SettingGoal {
   name: string;
   description: string;
 }
 
-export interface SettingGoalInArray {
+interface SettingGoalInArray {
   goalId: string;
   name: string;
   description: string;
 }
 
-export interface Goal {
+interface Goal {
   date: string;
   goalId: string;
   start: string;
@@ -24,12 +24,12 @@ export interface Goal {
 }
 
 
-export interface NewGoal {
+interface NewGoal {
   date: string;
   goalId: string;
 }
 
-export interface SingleDateGoals {
+interface SingleDateGoals {
   goalId: string;
   name: string;
   description: string;

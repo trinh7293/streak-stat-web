@@ -5,13 +5,6 @@ import {
   getTodayFormat,
 } from '@/utils/dateTimeHandle'
 import {
-  StateType,
-  SettingGoal,
-  Goal,
-  SingleDateGoals,
-  SettingGoalInArray,
-} from '@/store/interface-object'
-import {
   dateCollGroup,
   goalsColl,
 } from '@/firebase_backend'

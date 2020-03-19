@@ -1,7 +1,6 @@
 import { getAdjacentDay } from '@/utils/dateTimeHandle'
 import _ from 'lodash'
 import moment from 'moment'
-import { Goal, NewGoal } from './interface-object'
 
 export default class ChangeGoals {
   goals: Goal[]

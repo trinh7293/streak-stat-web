@@ -80,9 +80,6 @@ import {
   editGoalSetting,
   deleteGoalSetting,
 } from '@/api'
-import {
-  SettingGoalInArray,
-} from '../store/interface-object'
 
 export default Vue.extend({
   data: () => ({
