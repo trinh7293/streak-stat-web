@@ -3,6 +3,7 @@ import {
 } from '@/firebase_backend'
 import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
 import _ from 'lodash'
+import { goalConverter } from '@/firebase_backend/converter'
 
 export const deleteGoal = async (
   date: string, goalId: string,
@@ -38,15 +39,26 @@ export const addGoal = async (
 }
 
 export const addGoalSetting = async (data: SettingGoal) => {
-  const addData = _.omit(data, 'goalId')
-  goalsColl.add(addData)
+  const addData = _.pick(
+    data,
+    'name',
+    'description',
+    'icon',
+  )
+  goalsColl.withConverter(goalConverter).add(addData)
 }
 
 export const editGoalSetting = async (
   data: SettingGoalInArray,
 ) => {
-  const editData = _.omit(data, 'goalId')
-  goalsColl.doc(data.goalId).set(editData)
+  const editData = _.pick(
+    data,
+    'name',
+    'description',
+    'icon',
+  )
+  goalsColl.withConverter(goalConverter)
+    .doc(data.goalId).set(editData)
 }
 
 export const deleteGoalSetting = async (
@@ -54,14 +66,3 @@ export const deleteGoalSetting = async (
 ) => {
   goalsColl.doc(data.goalId).delete()
 }
-
-// export const editSettingChangeName = async () => {
-//   const QuerySnapshot = await goalsColl.get()
-//   QuerySnapshot.forEach(async snapshot => {
-//     const data = snapshot.data()
-//     goalsColl.doc(snapshot.id).set({
-//       name: data.icon,
-//       description: data.name,
-//     })
-//   })
-// }

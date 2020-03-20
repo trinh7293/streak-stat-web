@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="getPickedDateGoals"
+    :items="getGoalStats"
     sort-by="calories"
     class="elevation-1"
   >
@@ -105,7 +105,8 @@ export default Vue.extend({
       },
       { text: 'Icon', value: 'icon' },
       { text: 'Description', value: 'description' },
-      { text: 'Current streak', value: 'streakCount' },
+      { text: 'Current streak', value: 'currentStreak' },
+      { text: 'Best streak', value: 'bestStreak' },
       { text: 'Actions', value: 'action', sortable: false },
     ],
     editedIndex: '',
@@ -124,7 +125,7 @@ export default Vue.extend({
   }),
 
   computed: {
-    ...mapGetters(['getPickedDateGoals']),
+    ...mapGetters(['getGoalStats']),
     formTitle() {
       return this.editedIndex === ''
         ? 'New Item' : 'Edit Item'

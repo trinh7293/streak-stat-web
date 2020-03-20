@@ -40,3 +40,18 @@ interface SingleDateGoals {
   end?: string;
   streakCount?: number;
 }
+
+interface GoalsStatistic {
+  goalId: string;
+  icon: string;
+  name: string;
+  description: string;
+  currentStreak: number;
+  bestStreak: number;
+}
+
+interface Streak {
+  from: Date;
+  to: Date;
+  streakCount: number;
+}

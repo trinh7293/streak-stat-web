@@ -81,6 +81,89 @@ export default new Vuex.Store({
         )
       return result
     },
+    // getListStreak: state => (
+    //   goalList: Array<string>
+    // ) => {
+    //   const goalNum = goalList.length
+    //   const goalInList: Array<Goal> = state.goals.filter(
+    //     goal => goalList.includes(goal.goalId),
+    //   )
+    //   const listOfStreakTail = Object.values(
+    //     _.groupBy(goalInList, 'date'),
+    //   )
+    //     .filter(date => date.length === goalNum
+    //       && _.some(date, goal => goal
+    // .end === goal.date))
+    //   const listStreak = listOfStreakTail.map(
+    //     goalsInSingleDate => {
+    //       const endGoal = goalsInSingleDate.find(
+    //         goal => goal.end === goal.date,
+    //       )
+    //       const smallestStreakGoal = _.minBy(
+    //         goalsInSingleDate, 'streakCount',
+    //       )
+    //       return {
+    //         from: smallestStreakGoal?.start,
+    //         to: endGoal?.end,
+    //         streakCount: smallestStreakGoal?.streakCount,
+    //       }
+    //     },
+    //   )
+    //   return listStreak
+    // },
+    getCurrentCompositionStreak: (state, getter) => (
+      goalList: Array<string>,
+    ) => {
+      const goalNum = goalList.length
+      if (goalNum === 1) {
+        const goalId = goalList[0]
+        const goalStats:
+          Array<GoalsStatistic> = getter.getGoalStats
+        return goalStats.find(
+          sett => sett.goalId === goalId,
+        )?.currentStreak || 0
+      }
+      const today = getTodayFormat()
+      const todayGoals = state.goals.filter(
+        goal => goal.date === today
+          && goalList.includes(goal.goalId),
+      )
+      if (todayGoals.length < goalNum) {
+        return 0
+      }
+      return _.minBy(
+        todayGoals, 'streakCount',
+      )?.streakCount || 0
+    },
+    getGoalStats: (state, getters) => {
+      const today = getTodayFormat()
+      const settingArr: Array<SettingGoalInArray> = getters
+        .getSettingArray
+      const stats: Array<GoalsStatistic> = settingArr
+        .map(sett => {
+          const todayGoal = state.goals.find(
+            g => g.goalId === sett.goalId
+              && g.date === today,
+          )
+          const maxStreak = _.maxBy(state.goals.filter(
+            g => g.goalId === sett.goalId,
+          ), 'streakCount')
+          let currentStreak = 0
+          let bestStreak = 0
+          if (todayGoal) {
+            currentStreak = todayGoal.streakCount
+          }
+          if (maxStreak) {
+            bestStreak = maxStreak.streakCount
+          }
+          return {
+            ...sett,
+            currentStreak,
+            bestStreak,
+          }
+        })
+      return stats
+    },
   },
   actions: {
     async initGoalSettingListener({ commit }) {
