@@ -17,7 +17,7 @@ class Goal {
 }
 
 // Firestore data converter
-export const goalConverter = {
+export default {
   toFirestore(goal: SettingGoal) {
     return {
       name: goal.name,
@@ -36,5 +36,3 @@ export const goalConverter = {
     )
   },
 }
-
-export const a = 1

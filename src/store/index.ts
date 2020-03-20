@@ -70,11 +70,15 @@ export default new Vuex.Store({
               g => g.goalId === setting.goalId,
             )
             if (!goal) return setting
-            const { start, end, streakCount } = goal
+            const {
+              start, end,
+              streakCount, doneTime,
+            } = goal
             return {
               ...setting,
               start,
               end,
+              doneTime,
               streakCount,
             }
           },
@@ -148,18 +152,10 @@ export default new Vuex.Store({
           const maxStreak = _.maxBy(state.goals.filter(
             g => g.goalId === sett.goalId,
           ), 'streakCount')
-          let currentStreak = 0
-          let bestStreak = 0
-          if (todayGoal) {
-            currentStreak = todayGoal.streakCount
-          }
-          if (maxStreak) {
-            bestStreak = maxStreak.streakCount
-          }
           return {
             ...sett,
-            currentStreak,
-            bestStreak,
+            currentStreak: todayGoal?.streakCount || 0,
+            bestStreak: maxStreak?.streakCount || 0,
           }
         })
       return stats
@@ -197,10 +193,11 @@ export default new Vuex.Store({
           snapShot.docChanges().forEach(change => {
             const { doc } = change
             const docData = doc.data()
-            const { goalId } = docData
+            const { goalId, doneTime } = docData
             const docChanged = {
               date: doc.id,
               goalId,
+              doneTime,
             }
             const { goals } = state
             if (change.type === 'added') {

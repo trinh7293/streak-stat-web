@@ -3,7 +3,9 @@ import {
 } from '@/firebase_backend'
 import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
 import _ from 'lodash'
-import { goalConverter } from '@/firebase_backend/converter'
+import goalConverter from '@/firebase_backend/goalConverter'
+import datesConverter from
+  '@/firebase_backend/datesConverter'
 
 export const deleteGoal = async (
   date: string, goalId: string,
@@ -23,9 +25,13 @@ export const addGoal = async (
   date: string, goalId: string,
 ) => {
   try {
-    await goalsColl.doc(goalId)
+    await goalsColl
+      .doc(goalId)
       .collection(GOAL_DATE_SUBCOLLECTION)
-      .doc(date).set({
+      .withConverter(datesConverter)
+      .doc(date)
+      .set({
+        doneTime: new Date(),
         goalId,
       })
     console.log(

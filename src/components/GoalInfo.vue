@@ -11,6 +11,9 @@
       <v-flex v-show="goalId" xs1>
         <v-label color="green">{{streakCount}}</v-label>
       </v-flex>
+      <!-- <v-flex v-show="goalId" xs1>
+        <v-label color="green">{{doneTime}}</v-label>
+      </v-flex> -->
       <v-flex xs5></v-flex>
     </v-layout>
   </main>
@@ -62,6 +65,10 @@ export default Vue.extend({
     },
     end: {
       type: String,
+      default: null,
+    },
+    doneTime: {
+      type: Date,
       default: null,
     },
     streakCount: {

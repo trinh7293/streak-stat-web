@@ -10,6 +10,11 @@ interface SettingGoal {
   description: string;
 }
 
+interface DateRecordType {
+  goalId: string;
+  doneTime: Date;
+}
+
 interface SettingGoalInArray {
   goalId: string;
   name: string;
@@ -23,12 +28,14 @@ interface Goal {
   start: string;
   end: string;
   streakCount: number;
+  doneTime: Date;
 }
 
 
 interface NewGoal {
-  date: string;
   goalId: string;
+  date: string;
+  doneTime: firebase.firestore.Timestamp;
 }
 
 interface SingleDateGoals {
@@ -39,6 +46,7 @@ interface SingleDateGoals {
   start?: string;
   end?: string;
   streakCount?: number;
+  doneTime?: Date;
 }
 
 interface GoalsStatistic {

@@ -9,10 +9,13 @@ export default class ChangeGoals {
 
   goalId: string
 
+  doneTime: Date
+
   constructor(goals: Array<Goal>, docChanged: NewGoal) {
     this.goals = goals
     this.goalId = docChanged.goalId
     this.date = docChanged.date
+    this.doneTime = docChanged.doneTime?.toDate()
   }
 
   addGoal() {
@@ -33,6 +36,7 @@ export default class ChangeGoals {
         goalId: this.goalId,
         start: newStart,
         end: newEnd,
+        doneTime: this.doneTime,
         streakCount: newDocStreakCount,
       }
       newGoals = [
@@ -63,11 +67,12 @@ export default class ChangeGoals {
     } else if (nextStreak) {
       const oldStart = nextStreak.start
       const newStart = this.date
-      const newDoc = {
+      const newDoc: Goal = {
         date: this.date,
         goalId: this.goalId,
         start: newStart,
         end: nextStreak.end,
+        doneTime: this.doneTime,
         streakCount: 1,
       }
       newGoals = [
@@ -89,11 +94,12 @@ export default class ChangeGoals {
     } else if (prevStreak) {
       const oldEnd = prevStreak.end
       const newEnd = this.date
-      const newDoc = {
+      const newDoc: Goal = {
         date: this.date,
         goalId: this.goalId,
         start: prevStreak.start,
         end: newEnd,
+        doneTime: this.doneTime,
         streakCount: moment(this.date)
           .diff(moment(prevStreak.start), 'day') + 1,
       }
@@ -113,11 +119,12 @@ export default class ChangeGoals {
         newDoc,
       ]
     } else {
-      const newDoc = {
+      const newDoc: Goal = {
         date: this.date,
         goalId: this.goalId,
         start: this.date,
         end: this.date,
+        doneTime: this.doneTime,
         streakCount: 1,
       }
       newGoals = [
