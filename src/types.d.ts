@@ -59,7 +59,7 @@ interface GoalsStatistic {
 }
 
 interface Streak {
-  from: Date;
-  to: Date;
+  from: string;
+  to: string;
   streakCount: number;
 }

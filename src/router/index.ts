@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import GoalsManagement from '@/views/GoalsManagement.vue'
 import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
-// import TestTime from '../views/TestTime.vue'
+import Statistic from '../views/Statistic.vue'
 
 Vue.use(VueRouter)
 
@@ -29,13 +29,13 @@ const routes = [
     // TODO edit test
     component: About,
   },
-  // {
-  //   path: '/test',
-  //   name: 'Test',
-  //   // component: Home,
-  //   // TODO edit test
-  //   component: TestTime,
-  // },
+  {
+    path: '/statistic',
+    name: 'Statistic',
+    // component: Home,
+    // TODO edit test
+    component: Statistic,
+  },
 ]
 
 const router = new VueRouter({

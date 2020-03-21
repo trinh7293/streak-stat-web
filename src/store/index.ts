@@ -85,36 +85,56 @@ export default new Vuex.Store({
         )
       return result
     },
-    // getListStreak: state => (
-    //   goalList: Array<string>
-    // ) => {
-    //   const goalNum = goalList.length
-    //   const goalInList: Array<Goal> = state.goals.filter(
-    //     goal => goalList.includes(goal.goalId),
-    //   )
-    //   const listOfStreakTail = Object.values(
-    //     _.groupBy(goalInList, 'date'),
-    //   )
-    //     .filter(date => date.length === goalNum
-    //       && _.some(date, goal => goal
-    // .end === goal.date))
-    //   const listStreak = listOfStreakTail.map(
-    //     goalsInSingleDate => {
-    //       const endGoal = goalsInSingleDate.find(
-    //         goal => goal.end === goal.date,
-    //       )
-    //       const smallestStreakGoal = _.minBy(
-    //         goalsInSingleDate, 'streakCount',
-    //       )
-    //       return {
-    //         from: smallestStreakGoal?.start,
-    //         to: endGoal?.end,
-    //         streakCount: smallestStreakGoal?.streakCount,
-    //       }
-    //     },
-    //   )
-    //   return listStreak
-    // },
+    getListStreak: state => (
+      goalList: Array<string>,
+    ) => {
+      const goalNum = goalList.length
+      const goalInList: Array<Goal> = state.goals.filter(
+        goal => goalList.includes(goal.goalId),
+      )
+      const listOfStreakTail = Object.values(
+        _.groupBy(goalInList, 'date'),
+      )
+        .filter(date => date.length === goalNum
+          && _.some(date, goal => goal
+            .end === goal.date))
+      const listStreak:
+        Array<Streak> = listOfStreakTail.map(
+          goalsInSingleDate => {
+            const endGoal = goalsInSingleDate.find(
+              goal => goal.end === goal.date,
+            )
+            const smallestStreakGoal = _.minBy(
+              goalsInSingleDate, 'streakCount',
+            )
+            return {
+              from: smallestStreakGoal
+                ?.start || 'error from',
+              to: endGoal?.end || 'error to',
+              streakCount: smallestStreakGoal
+                ?.streakCount || 0,
+            }
+          },
+        )
+      return listStreak
+    },
+    getBestCompositionStreak: (_state, getter) => (
+      goalList: Array<string>,
+    ) => {
+      const goalNum = goalList.length
+      if (goalNum === 1) {
+        const goalId = goalList[0]
+        const goalStats:
+          Array<GoalsStatistic> = getter.getGoalStats
+        return goalStats.find(
+          sett => sett.goalId === goalId,
+        )?.bestStreak || 0
+      }
+      const listStreak: Array<Streak> = getter
+        .getListStreak(goalList)
+      return _.maxBy(listStreak, 'streakCount')
+        ?.streakCount || 0
+    },
     getCurrentCompositionStreak: (state, getter) => (
       goalList: Array<string>,
     ) => {

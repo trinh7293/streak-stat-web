@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-layout row wrap>
-      <v-flex xs4
+      <v-flex xs3
         v-for="route in routerDatas"
         :key="route.url"
       >
@@ -44,6 +44,11 @@ export default Vue.extend({
         url: '/goals',
         title: 'Goals',
         icon: 'mdi-star',
+      },
+      {
+        url: '/statistic',
+        title: 'Statistic',
+        icon: 'mdi-chart-bar',
       },
     ],
   }),
