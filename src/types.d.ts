@@ -1,3 +1,5 @@
+declare module 'v-calendar'
+
 interface StateType {
   pickedDate: string;
   settingGoals: Record<string, SettingGoal>;
@@ -59,7 +61,7 @@ interface GoalsStatistic {
 }
 
 interface Streak {
-  from: string;
-  to: string;
+  start: string;
+  end: string;
   streakCount: number;
 }

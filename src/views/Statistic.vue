@@ -1,20 +1,31 @@
 <template>
   <main>
-    bestStreak: {{getStats.bestStreak}}
-    currentStreak: {{getStats.currentStreak}}
-    <v-date-picker
-      v-model="date"
-      :allowed-dates="allowedDates"
-      class="mt-4"
-    ></v-date-picker>
-    <v-container fluid>
-      <v-checkbox
-        v-for="goal in getSettingArray"
-        :key="goal.goalId"
-        :value="goal.goalId"
-        :label="goal.name"
-        v-model="goalSelected"
-      ></v-checkbox>
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs6>
+          bestStreak: {{getStats.bestStreak}}
+        </v-flex>
+        <v-flex xs6>
+          currentStreak: {{getStats.currentStreak}}
+        </v-flex>
+        <v-flex xs6>
+          <vc-calendar
+            is-dark
+            :attributes="calendarAttr"
+          />
+        </v-flex>
+        <v-flex xs6>
+          <v-container fluid>
+            <v-checkbox
+              v-for="goal in getSettingArray"
+              :key="goal.goalId"
+              :value="goal.goalId"
+              :label="goal.name"
+              v-model="goalSelected"
+            ></v-checkbox>
+          </v-container>
+        </v-flex>
+      </v-layout>
     </v-container>
   </main>
 </template>
@@ -23,7 +34,6 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import moment from 'moment'
-import _ from 'lodash'
 
 export default Vue.extend({
   data: () => ({
@@ -44,18 +54,17 @@ export default Vue.extend({
           .getCurrentCompositionStreak(this.goalSelected),
       }
     },
-    allowedDates() {
+    calendarAttr() {
       const listStreak: Array<Streak> = this
         .getListStreak(this.goalSelected)
-      return (val: string) => _.some(
-        listStreak,
-        range => moment(val).isBetween(
-          moment(range.from),
-          moment(range.to),
-          undefined,
-          '[]',
-        ),
-      )
+      return [{
+        key: 'today',
+        highlight: true,
+        dates: listStreak.map(streak => ({
+          start: moment(streak.start).toDate(),
+          end: moment(streak.end).toDate(),
+        })),
+      }]
     },
   },
 })

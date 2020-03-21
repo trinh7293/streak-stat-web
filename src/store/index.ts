@@ -108,9 +108,9 @@ export default new Vuex.Store({
               goalsInSingleDate, 'streakCount',
             )
             return {
-              from: smallestStreakGoal
+              start: smallestStreakGoal
                 ?.start || 'error from',
-              to: endGoal?.end || 'error to',
+              end: endGoal?.end || 'error to',
               streakCount: smallestStreakGoal
                 ?.streakCount || 0,
             }
