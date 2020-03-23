@@ -1,22 +1,17 @@
 <template>
-  <v-container>
-    <v-layout row wrap >
-      <v-flex
-        xs3
-        v-for="goal in getPickedDateGoals"
-        :key="goal.goalId"
-      >
-      <!-- <v-flex
-        xs12
-        v-for="goal in getPickedDateDataSample"
-        :key="goal.goalId"
-      > -->
-        <GoalInfo
-          v-bind='goal'
-          :pickedDate='pickedDate'
-        />
-      </v-flex>
-    </v-layout>
+    <v-container>
+      <v-row dense>
+        <v-col
+          v-for="(goal, i) in getPickedDateGoals"
+          :key="i"
+          cols="6"
+        >
+          <GoalInfo
+            v-bind='goal'
+            :pickedDate='pickedDate'
+          />
+        </v-col>
+    </v-row>
   </v-container>
 </template>
 

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import GoalsManagement from '@/views/GoalsManagement.vue'
 import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
+// import About from '@/views/About.vue'
 import Statistic from '../views/Statistic.vue'
 
 Vue.use(VueRouter)
@@ -22,13 +22,13 @@ const routes = [
     // TODO edit test
     component: GoalsManagement,
   },
-  {
-    path: '/about',
-    name: 'About',
-    // component: Home,
-    // TODO edit test
-    component: About,
-  },
+  // {
+  //   path: '/about',
+  //   name: 'About',
+  //   // component: Home,
+  //   // TODO edit test
+  //   component: About,
+  // },
   {
     path: '/statistic',
     name: 'Statistic',

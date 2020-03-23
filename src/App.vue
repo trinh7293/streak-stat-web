@@ -35,11 +35,11 @@ export default Vue.extend({
         title: 'Home',
         icon: 'mdi-home',
       },
-      {
-        url: '/about',
-        title: 'About',
-        icon: 'mdi-information',
-      },
+      // {
+      //   url: '/about',
+      //   title: 'About',
+      //   icon: 'mdi-information',
+      // },
       {
         url: '/goals',
         title: 'Goals',

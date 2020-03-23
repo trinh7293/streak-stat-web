@@ -1,22 +1,26 @@
 <template>
-  <main>
-    <v-layout row wrap>
-      <v-flex xs6 class='text-xs-left'>
-        <v-btn class='mx-2' fab dark small
-          v-bind:color='sttColor'
-          v-on:click='toggleStt'>
-            <v-icon>{{icon}}</v-icon>
-        </v-btn>
-      </v-flex>
-      <v-flex v-show="goalId" xs1>
-        <v-label color="green">{{streakCount}}</v-label>
-      </v-flex>
-      <!-- <v-flex v-show="goalId" xs1>
-        <v-label color="green">{{doneTime}}</v-label>
-      </v-flex> -->
-      <v-flex xs5></v-flex>
-    </v-layout>
-  </main>
+  <v-card
+    :color="sttColor"
+    dark
+    @click='toggleStt'
+  >
+    <div class="d-flex flex-no-wrap justify-space-between">
+      <div class="d-flex flex-no-wrap justify-start">
+        <v-icon dark>{{icon}}</v-icon>
+        <div>
+          <v-card-title
+            class="headline"
+            v-text="name"
+          ></v-card-title>
+
+          <v-card-subtitle
+            v-text="streakString"
+          />
+        </div>
+      </div>
+      <v-icon v-if="streakCount" large>mdi-check</v-icon>
+    </div>
+  </v-card>
 </template>
 
 <script lang='ts'>
@@ -40,6 +44,9 @@ export default Vue.extend({
   computed: {
     sttColor(): string {
       return this.streakCount > 0 ? 'green' : 'red'
+    },
+    streakString(): string {
+      return `Current Streak: ${this.streakCount}`
     },
   },
   props: {
@@ -73,7 +80,7 @@ export default Vue.extend({
     },
     streakCount: {
       type: Number,
-      default: null,
+      default: 0,
     },
   },
 })

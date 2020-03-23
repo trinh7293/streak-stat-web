@@ -8,22 +8,24 @@
         <v-flex xs6>
           currentStreak: {{getStats.currentStreak}}
         </v-flex>
+        <v-flex xs3></v-flex>
         <v-flex xs6>
           <vc-calendar
             is-dark
             :attributes="calendarAttr"
           />
         </v-flex>
-        <v-flex xs6>
-          <v-container fluid>
-            <v-checkbox
-              v-for="goal in getSettingArray"
-              :key="goal.goalId"
-              :value="goal.goalId"
-              :label="goal.name"
-              v-model="goalSelected"
-            ></v-checkbox>
-          </v-container>
+        <v-flex xs3></v-flex>
+        <v-flex
+          xs4
+          v-for="goal in getSettingArray"
+          :key="goal.goalId"
+        >
+          <v-checkbox
+            :value="goal.goalId"
+            :label="goal.name"
+            v-model="goalSelected"
+          ></v-checkbox>
         </v-flex>
       </v-layout>
     </v-container>
