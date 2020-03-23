@@ -47,7 +47,7 @@ export default Vue.extend({
       },
       {
         url: '/statistic',
-        title: 'Statistic',
+        title: 'Stats',
         icon: 'mdi-chart-bar',
       },
     ],
