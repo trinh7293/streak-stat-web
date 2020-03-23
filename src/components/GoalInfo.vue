@@ -18,7 +18,7 @@
           />
         </div>
       </div>
-      <v-icon v-if="streakCount" large>mdi-check</v-icon>
+      <v-icon v-if="streakCount">mdi-check</v-icon>
     </div>
   </v-card>
 </template>
