@@ -46,7 +46,9 @@ export default Vue.extend({
       return this.streakCount > 0 ? 'green' : 'red'
     },
     streakString(): string {
-      return `Current Streak: ${this.streakCount}`
+      const streakNum = this.streakCount
+        || this.prevStreakCount
+      return `Current Streak: ${streakNum}`
     },
   },
   props: {
@@ -79,6 +81,10 @@ export default Vue.extend({
       default: null,
     },
     streakCount: {
+      type: Number,
+      default: 0,
+    },
+    prevStreakCount: {
       type: Number,
       default: 0,
     },

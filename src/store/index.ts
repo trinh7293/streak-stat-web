@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {
-  getTodayFormat,
+  getTodayFormat, getAdjacentDay,
 } from '@/utils/dateTimeHandle'
 import {
   dateCollGroup,
@@ -55,11 +55,11 @@ export default new Vuex.Store({
           }),
         )
     },
-    getPickedDateGoals(
+    getGoalByDate: (
       state, getters,
-    ): Array<SingleDateGoals> {
+    ) => (date: string) => {
       const goalsByDate = state.goals.filter(
-        item => item.date === state.pickedDate,
+        item => item.date === date,
       )
       const settingArray:
         Array<SettingGoalInArray> = getters.getSettingArray
@@ -69,21 +69,43 @@ export default new Vuex.Store({
             const goal = goalsByDate.find(
               g => g.goalId === setting.goalId,
             )
-            if (!goal) return setting
-            const {
-              start, end,
-              streakCount, doneTime,
-            } = goal
             return {
               ...setting,
-              start,
-              end,
-              doneTime,
-              streakCount,
+              start: goal?.start,
+              end: goal?.end,
+              doneTime: goal?.doneTime,
+              streakCount: goal?.streakCount,
             }
           },
         )
       return result
+    },
+    getPickedDateGoalsInfo(
+      state, getters,
+    ): Array<SingleDateGoals> {
+      const { pickedDate } = state
+      const { prevDay } = getAdjacentDay(pickedDate)
+      const pickedDateGoals = getters
+        .getGoalByDate(pickedDate)
+      const prevDateGoals = getters
+        .getGoalByDate(prevDay)
+      const mergeFunc = (
+        todayValue: SingleDateGoals,
+        prevValue: SingleDateGoals,
+      ): SingleDateGoals => {
+        if (prevValue.streakCount) {
+          return {
+            ...todayValue,
+            prevStreakCount: prevValue.streakCount,
+          }
+        }
+        return todayValue
+      }
+      return _.mergeWith(
+        pickedDateGoals,
+        prevDateGoals,
+        mergeFunc,
+      )
     },
     getListStreak: state => (
       goalList: Array<string>,

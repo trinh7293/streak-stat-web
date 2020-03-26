@@ -48,6 +48,7 @@ interface SingleDateGoals {
   start?: string;
   end?: string;
   streakCount?: number;
+  prevStreakCount?: number;
   doneTime?: Date;
 }
 

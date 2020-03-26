@@ -2,7 +2,7 @@
     <v-container>
       <v-row dense>
         <v-col
-          v-for="(goal, i) in getPickedDateGoals"
+          v-for="(goal, i) in getPickedDateGoalsInfo"
           :key="i"
           cols="6"
         >
@@ -27,7 +27,7 @@ export default Vue.extend({
     GoalInfo,
   },
   computed: {
-    ...mapGetters(['getPickedDateGoals']),
+    ...mapGetters(['getPickedDateGoalsInfo']),
     ...mapState(['pickedDate']),
   },
   data: () => ({

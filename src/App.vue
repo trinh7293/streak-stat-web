@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-layout row wrap>
-      <v-flex xs3
+      <v-flex xs4
         v-for="route in routerDatas"
         :key="route.url"
       >
