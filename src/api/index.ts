@@ -4,8 +4,7 @@ import {
 import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
 import _ from 'lodash'
 import goalConverter from '@/firebase_backend/goalConverter'
-import datesConverter from
-  '@/firebase_backend/datesConverter'
+import { getTodayFormat } from '@/utils/dateTimeHandle'
 
 export const deleteGoal = async (
   date: string, goalId: string,
@@ -25,15 +24,18 @@ export const addGoal = async (
   date: string, goalId: string,
 ) => {
   try {
+    const addObj: DateRecordType = {
+      goalId,
+    }
+    if (getTodayFormat() === date) {
+      addObj.doneTime = new Date()
+    }
     await goalsColl
       .doc(goalId)
       .collection(GOAL_DATE_SUBCOLLECTION)
-      .withConverter(datesConverter)
+      // .withConverter(datesConverter)
       .doc(date)
-      .set({
-        doneTime: new Date(),
-        goalId,
-      })
+      .set(addObj)
     console.log(
       'successfully add goal: ',
       date,

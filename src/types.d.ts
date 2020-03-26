@@ -14,7 +14,7 @@ interface SettingGoal {
 
 interface DateRecordType {
   goalId: string;
-  doneTime: Date;
+  doneTime?: Date;
 }
 
 interface SettingGoalInArray {
