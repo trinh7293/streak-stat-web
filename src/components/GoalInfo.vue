@@ -43,12 +43,20 @@ export default Vue.extend({
   },
   computed: {
     sttColor(): string {
-      return this.streakCount > 0 ? 'green' : 'red'
+      if (this.streakCount < 1) {
+        return 'red'
+      }
+      if (this.streakCount < 3) {
+        return '#1bae16'
+      }
+      return '#1bae16'
+    },
+    streakNum(): number {
+      return this.streakCount
+        || this.prevStreakCount
     },
     streakString(): string {
-      const streakNum = this.streakCount
-        || this.prevStreakCount
-      return `Current Streak: ${streakNum}`
+      return `Current Streak: ${this.streakNum}`
     },
   },
   props: {
