@@ -2,11 +2,11 @@
   <main>
     <v-container>
       <v-layout row wrap>
-        <v-flex xs6>
-          bestStreak: {{getStats.bestStreak}}
+        <v-flex xs12>
+          BestStreak: {{getStats.bestStreak}}
         </v-flex>
-        <v-flex xs6>
-          currentStreak: {{getStats.currentStreak}}
+        <v-flex xs12>
+          CurrentStreak: {{getStats.currentStreak}}
         </v-flex>
         <v-flex xs3></v-flex>
         <v-flex xs6>

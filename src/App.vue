@@ -1,47 +1,79 @@
 <template>
   <v-app>
-    <v-container>
-      <v-layout row wrap>
-        <v-flex xs4
-          v-for="route in routerDatas"
-          :key="route.url"
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+    >
+      <v-list-item class="px-2">
+        <v-list-item-avatar>
+          <v-img
+            :src='user.avatarUrl'
+          ></v-img>
+        </v-list-item-avatar>
+
+        <v-list-item-title>John Leider</v-list-item-title>
+
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list dense>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          link
+          :to="item.url"
         >
-          <NavigatorButton
-            :url='route.url'
-            :title='route.title'
-            :icon='route.icon'
-            :class="`d-flex justify-center mb-6`"
-          />
-        </v-flex>
-      <v-flex xs12>
-        <router-view/>
-      </v-flex>
-      </v-layout>
-    </v-container>
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ item.title }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar
+      app
+      color="indigo"
+      dark
+    >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-toolbar-title>Habit Streak</v-toolbar-title>
+    </v-app-bar>
+
+    <v-content>
+      <router-view/>
+    </v-content>
+    <v-footer
+      color="indigo"
+      app
+    >
+      <span class="white--text">&copy; 2019</span>
+    </v-footer>
   </v-app>
 </template>
 
 <script lang='ts'>
 import Vue from 'vue'
-import NavigatorButton from
-  '@/components/NavigatorButton.vue'
 
 export default Vue.extend({
-  components: {
-    NavigatorButton,
-  },
+
   data: () => ({
-    routerDatas: [
+    drawer: null,
+    user: {
+      avatarUrl:
+          'https://randomuser.me/api/portraits/men/85.jpg',
+    },
+    items: [
       {
         url: '/',
         title: 'Home',
         icon: 'mdi-home',
       },
-      // {
-      //   url: '/about',
-      //   title: 'About',
-      //   icon: 'mdi-information',
-      // },
       {
         url: '/goals',
         title: 'Goals',
@@ -53,6 +85,7 @@ export default Vue.extend({
         icon: 'mdi-chart-bar',
       },
     ],
+    mini: true,
   }),
   created() {
     this.$store.dispatch('initGoalSettingListener')
@@ -60,26 +93,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang='scss'>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
