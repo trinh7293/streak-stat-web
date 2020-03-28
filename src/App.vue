@@ -1,73 +1,32 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <v-list-item class="px-2">
-        <v-list-item-avatar>
-          <v-img
-            :src='user.avatarUrl'
-          ></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-title>John Leider</v-list-item-title>
-
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list dense>
-        <v-list-item
-          v-for="item in items"
-          :key="item.title"
-          link
-          :to="item.url"
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ item.title }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      app
-      color="indigo"
-      dark
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Habit Streak</v-toolbar-title>
-    </v-app-bar>
-
     <v-content>
       <router-view/>
     </v-content>
-    <v-footer
-      color="indigo"
+    <v-bottom-navigation
+      dark
+      grow
       app
+      :value="activeBtn"
+      color="teal"
     >
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
+      <v-btn
+        v-for="item in items"
+        :key="item.title"
+        :to="item.url"
+        :value="item.url"
+      >
+        <span>{{ item.title }}</span>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
-<script lang='ts'>
-import Vue from 'vue'
-
-export default Vue.extend({
-
+<script>
+export default {
   data: () => ({
-    drawer: null,
-    user: {
-      avatarUrl:
-          'https://randomuser.me/api/portraits/men/85.jpg',
-    },
+    activeBtn: '/',
     items: [
       {
         url: '/',
@@ -85,11 +44,17 @@ export default Vue.extend({
         icon: 'mdi-chart-bar',
       },
     ],
-    mini: true,
   }),
   created() {
     this.$store.dispatch('initGoalSettingListener')
     this.$store.dispatch('initDayDataListener')
   },
-})
+}
 </script>
+
+<style scoped>
+.v-bottom-navigation
+.v-btn:not(.v-btn--round).v-size--default {
+  height: inherit;
+}
+</style>
