@@ -2,11 +2,12 @@ declare module 'v-calendar'
 
 interface StateType {
   pickedDate: string;
-  settingGoals: Record<string, SettingGoal>;
+  settingGoals: Array<SettingGoal>;
   goals: Array<Goal>;
 }
 
 interface SettingGoal {
+  goalId: string;
   name: string;
   icon: string;
   description: string;
@@ -15,13 +16,6 @@ interface SettingGoal {
 interface DateRecordType {
   goalId: string;
   doneTime?: Date;
-}
-
-interface SettingGoalInArray {
-  goalId: string;
-  name: string;
-  icon: string;
-  description: string;
 }
 
 interface Goal {

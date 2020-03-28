@@ -9,6 +9,7 @@ import {
   goalsColl,
 } from '@/firebase_backend'
 import {
+  ADD_SETTING_DATA,
   EDIT_SETTING_DATA,
   DELETE_SETTING_DATA,
   SET_PICKED_DATE,
@@ -20,7 +21,7 @@ Vue.use(Vuex)
 
 const initState: StateType = {
   pickedDate: getTodayFormat(),
-  settingGoals: {},
+  settingGoals: [],
   goals: [],
 }
 
@@ -30,41 +31,45 @@ export default new Vuex.Store({
     [SET_PICKED_DATE](state, dateFormat) {
       state.pickedDate = dateFormat
     },
-    [EDIT_SETTING_DATA](
-      state, payload: Record<string, SettingGoal>,
+    [ADD_SETTING_DATA](
+      state, payload: SettingGoal,
     ) {
-      state.settingGoals = {
-        ...state.settingGoals,
-        ...payload,
+      const index = state.settingGoals.findIndex(
+        item => item.goalId === payload.goalId,
+      )
+      if (index < 0) {
+        state.settingGoals.push(payload)
       }
     },
-    [DELETE_SETTING_DATA](state, payload: string) {
-      _.unset(state.settingGoals, payload)
+    [EDIT_SETTING_DATA](
+      state, payload: SettingGoal,
+    ) {
+      const index = state.settingGoals.findIndex(
+        item => item.goalId === payload.goalId,
+      )
+      if (index >= 0) {
+        state.settingGoals.splice(index, 1, payload)
+      }
+    },
+    [DELETE_SETTING_DATA](state, goalId: string) {
+      const index = state.settingGoals.findIndex(
+        item => item.goalId === goalId,
+      )
+      if (index >= 0) {
+        state.settingGoals.splice(index, 1)
+      }
     },
     [SET_GOAL_DATA](state, payload: Array<Goal>) {
       state.goals = payload
     },
   },
   getters: {
-    getSettingArray(state): Array<SettingGoalInArray> {
-      return Object.keys(state.settingGoals)
-        .map(
-          goalId => ({
-            goalId,
-            ...state.settingGoals[goalId],
-          }),
-        )
-    },
-    getGoalByDate: (
-      state, getters,
-    ) => (date: string) => {
+    getGoalByDate: state => (date: string) => {
       const goalsByDate = state.goals.filter(
         item => item.date === date,
       )
-      const settingArray:
-        Array<SettingGoalInArray> = getters.getSettingArray
       const result:
-        Array<SingleDateGoals> = settingArray.map(
+        Array<SingleDateGoals> = state.settingGoals.map(
           setting => {
             const goal = goalsByDate.find(
               g => g.goalId === setting.goalId,
@@ -181,25 +186,24 @@ export default new Vuex.Store({
         todayGoals, 'streakCount',
       )?.streakCount || 0
     },
-    getGoalStats: (state, getters) => {
+    getGoalStats: state => {
       const today = getTodayFormat()
-      const settingArr: Array<SettingGoalInArray> = getters
-        .getSettingArray
-      const stats: Array<GoalsStatistic> = settingArr
-        .map(sett => {
-          const todayGoal = state.goals.find(
-            g => g.goalId === sett.goalId
-              && g.date === today,
-          )
-          const maxStreak = _.maxBy(state.goals.filter(
-            g => g.goalId === sett.goalId,
-          ), 'streakCount')
-          return {
-            ...sett,
-            currentStreak: todayGoal?.streakCount || 0,
-            bestStreak: maxStreak?.streakCount || 0,
-          }
-        })
+      const stats:
+        Array<GoalsStatistic> = state.settingGoals
+          .map(sett => {
+            const todayGoal = state.goals.find(
+              g => g.goalId === sett.goalId
+                && g.date === today,
+            )
+            const maxStreak = _.maxBy(state.goals.filter(
+              g => g.goalId === sett.goalId,
+            ), 'streakCount')
+            return {
+              ...sett,
+              currentStreak: todayGoal?.streakCount || 0,
+              bestStreak: maxStreak?.streakCount || 0,
+            }
+          })
       return stats
     },
   },
@@ -209,19 +213,25 @@ export default new Vuex.Store({
         goalsColl.onSnapshot(snapShot => {
           snapShot.docChanges().forEach(change => {
             const { doc } = change
-            const data = {
-              [doc.id]: {
-                ...doc.data(),
-              },
+            const { name, icon, description } = doc.data()
+            const payload: SettingGoal = {
+              goalId: doc.id,
+              name,
+              icon,
+              description,
             }
             if (change.type === 'added') {
-              commit(EDIT_SETTING_DATA, data)
+              commit(ADD_SETTING_DATA, payload)
             }
             if (change.type === 'modified') {
-              commit(EDIT_SETTING_DATA, data)
+              commit(EDIT_SETTING_DATA, payload)
             }
             if (change.type === 'removed') {
-              commit(DELETE_SETTING_DATA, doc.id)
+              console.log(
+                'commit remove setting: ',
+                payload,
+              )
+              commit(DELETE_SETTING_DATA, payload.goalId)
             }
           })
         })

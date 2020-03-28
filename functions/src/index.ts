@@ -1,42 +1,55 @@
 import * as functions from 'firebase-functions'
-import * as admin from 'firebase-admin'
-// const cors = require('cors')({origin: true})
-import * as cors from 'cors'
-import {
-  COLLECTION_DAY_DATA,
-  START_STREAK,
-  STREAK_NUM,
-  IS_END_STREAK,
-} from './constants'
+import * as client from 'firebase-tools'
 
 
-const corsHandler = cors({ origin: true })
-
-admin.initializeApp(functions.config().firebase)
-const firestore = admin.firestore()
-const dayColl = firestore.collection(COLLECTION_DAY_DATA)
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-
-exports.editGoalData = functions.https.onRequest((request, response) => {
-  corsHandler(request, response, async () => {
-    if (request.method !== 'POST') {
-      response.status(400).send('Please send a POST request')
-    }
-    const {
-      pickedDate,
-    } = request.body
-    const editData = {
-      [request.body.id]: {
-        [START_STREAK]: request.body[START_STREAK],
-        [STREAK_NUM]: request.body[STREAK_NUM],
-        [IS_END_STREAK]: request.body[IS_END_STREAK],
-      },
-    }
-    await dayColl.doc(pickedDate).set(editData, {
-      merge: true,
-    })
-    response.send('Sucessfully set doc')
+/**
+ * Initiate a recursive delete of documents at a given path.
+ *
+ * The calling user must be authenticated
+ * and have the custom "admin" attribute
+ * set to true on the auth token.
+ *
+ * This delete is NOT an atomic operation and it's possible
+ * that it may fail after only deleting some documents.
+ *
+ * @param {string} data.path the document
+ * or collection path to delete.
+ */
+exports.recursiveDelete = functions
+  .runWith({
+    timeoutSeconds: 540,
+    memory: '2GB',
   })
-})
+  .https.onCall(data => {
+    // Only allow admin users to execute this function.
+    // if (!(context.auth && context.auth.token
+    //     && context.auth.token.admin)) {
+    //   throw new functions.https.HttpsError(
+    //     'permission-denied',
+    //     'Must be an administrative',
+    //     'user to initiate delete.',
+    //   )
+    // }
+
+    const { path } = data
+    // console.log(
+    //   `User ${context.auth.uid} has
+    // requested to delete path ${path}`,
+    // )
+
+    // Run a recursive delete on the
+    // given document or collection path.
+    // The 'token' must be set in the
+    // functions config, and can be generated
+    // at the command line by running 'firebase login:ci'.
+    return client.firestore
+      .delete(path, {
+        project: process.env.GCLOUD_PROJECT,
+        recursive: true,
+        yes: true,
+        // token: functions.config().fb.token,
+      })
+      .then(() => ({
+        path,
+      }))
+  })

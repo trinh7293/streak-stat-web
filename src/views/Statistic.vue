@@ -18,7 +18,7 @@
         <v-flex xs3></v-flex>
         <v-flex
           xs4
-          v-for="goal in getSettingArray"
+          v-for="goal in settingGoals"
           :key="goal.goalId"
         >
           <v-checkbox
@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import moment from 'moment'
 
 export default Vue.extend({
@@ -42,8 +42,8 @@ export default Vue.extend({
     goalSelected: [],
   }),
   computed: {
+    ...mapState(['settingGoals']),
     ...mapGetters([
-      'getSettingArray',
       'getListStreak',
       'getBestCompositionStreak',
       'getCurrentCompositionStreak',

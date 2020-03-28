@@ -1,21 +1,23 @@
 <template>
   <v-app>
-    <v-layout row wrap>
-      <v-flex xs4
-        v-for="route in routerDatas"
-        :key="route.url"
-      >
-        <NavigatorButton
-          :url='route.url'
-          :title='route.title'
-          :icon='route.icon'
-          :class="`d-flex justify-center mb-6`"
-        />
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs4
+          v-for="route in routerDatas"
+          :key="route.url"
+        >
+          <NavigatorButton
+            :url='route.url'
+            :title='route.title'
+            :icon='route.icon'
+            :class="`d-flex justify-center mb-6`"
+          />
+        </v-flex>
+      <v-flex xs12>
+        <router-view/>
       </v-flex>
-    <v-flex xs12>
-      <router-view/>
-    </v-flex>
-    </v-layout>
+      </v-layout>
+    </v-container>
   </v-app>
 </template>
 

@@ -1,7 +1,10 @@
 import {
-  goalsColl,
+  goalsColl, functions,
 } from '@/firebase_backend'
-import { GOAL_DATE_SUBCOLLECTION } from '@/constants'
+import {
+  GOAL_DATE_SUBCOLLECTION,
+  GOALS_COLLECTION,
+} from '@/constants'
 import _ from 'lodash'
 import goalConverter from '@/firebase_backend/goalConverter'
 import { getTodayFormat } from '@/utils/dateTimeHandle'
@@ -57,7 +60,7 @@ export const addGoalSetting = async (data: SettingGoal) => {
 }
 
 export const editGoalSetting = async (
-  data: SettingGoalInArray,
+  data: SettingGoal,
 ) => {
   const editData = _.pick(
     data,
@@ -69,8 +72,21 @@ export const editGoalSetting = async (
     .doc(data.goalId).set(editData)
 }
 
+
+const deleteAtPath = async (path: string) => {
+  try {
+    const deleteFn = await functions
+      .httpsCallable('recursiveDelete')
+    const result = await deleteFn({ path })
+    console.log(`Delete success: ${JSON.stringify(result)}`)
+  } catch (error) {
+    console.warn(error)
+  }
+}
+
 export const deleteGoalSetting = async (
-  data: SettingGoalInArray,
+  data: SettingGoal,
 ) => {
-  goalsColl.doc(data.goalId).delete()
+  // goalsColl.doc(data.goalId).delete()
+  deleteAtPath(`/${GOALS_COLLECTION}/${data.goalId}`)
 }
