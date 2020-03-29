@@ -18,13 +18,13 @@
         <v-flex xs3></v-flex>
         <v-flex
           xs4
-          v-for="goal in settingGoals"
-          :key="goal.goalId"
+          v-for="habit in settingHabits"
+          :key="habit.habitId"
         >
           <v-checkbox
-            :value="goal.goalId"
-            :label="goal.name"
-            v-model="goalSelected"
+            :value="habit.habitId"
+            :label="habit.name"
+            v-model="habitSelected"
           ></v-checkbox>
         </v-flex>
       </v-layout>
@@ -39,10 +39,10 @@ import moment from 'moment'
 
 export default Vue.extend({
   data: () => ({
-    goalSelected: [],
+    habitSelected: [],
   }),
   computed: {
-    ...mapState(['settingGoals']),
+    ...mapState(['settingHabits']),
     ...mapGetters([
       'getListStreak',
       'getBestCompositionStreak',
@@ -51,14 +51,14 @@ export default Vue.extend({
     getStats() {
       return {
         bestStreak: this
-          .getBestCompositionStreak(this.goalSelected),
+          .getBestCompositionStreak(this.habitSelected),
         currentStreak: this
-          .getCurrentCompositionStreak(this.goalSelected),
+          .getCurrentCompositionStreak(this.habitSelected),
       }
     },
     calendarAttr() {
       const listStreak: Array<Streak> = this
-        .getListStreak(this.goalSelected)
+        .getListStreak(this.habitSelected)
       return [{
         key: 'today',
         highlight: true,

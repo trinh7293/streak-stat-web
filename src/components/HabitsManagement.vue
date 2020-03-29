@@ -2,7 +2,7 @@
   <main>
     <v-data-table
       :headers="headers"
-      :items="getGoalStats"
+      :items="getHabitStats"
       sort-by="calories"
       class="elevation-1"
     >
@@ -88,7 +88,7 @@
           <v-card>
             <v-card-title
               class="headline">
-              Confirm delete goal
+              Confirm delete habit
             </v-card-title>
 
             <v-card-text>
@@ -125,9 +125,9 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import {
-  addGoalSetting,
-  editGoalSetting,
-  deleteGoalSetting,
+  addHabitSetting,
+  editHabitSetting,
+  deleteHabitSetting,
 } from '@/api'
 
 import IconPicker from '@/components/IconPicker.vue'
@@ -153,13 +153,13 @@ export default Vue.extend({
     ],
     editedIndex: '',
     editedItem: {
-      goalId: '',
+      habitId: '',
       name: '',
       description: '',
       icon: '',
     },
     defaultItem: {
-      goalId: '',
+      habitId: '',
       name: '',
       description: '',
       icon: '',
@@ -167,7 +167,7 @@ export default Vue.extend({
   }),
 
   computed: {
-    ...mapGetters(['getGoalStats']),
+    ...mapGetters(['getHabitStats']),
     formTitle() {
       return this.editedIndex === ''
         ? 'New Item' : 'Edit Item'
@@ -183,13 +183,13 @@ export default Vue.extend({
   },
 
   methods: {
-    editItem(item: SettingGoal) {
-      this.editedIndex = item.goalId
+    editItem(item: SettingHabit) {
+      this.editedIndex = item.habitId
       this.editedItem = { ...item }
       this.dialog = true
     },
-    async deleteItem(item: SettingGoal) {
-      await deleteGoalSetting(item)
+    async deleteItem(item: SettingHabit) {
+      await deleteHabitSetting(item.habitId)
       this.dialogDelete = false
     },
     close() {
@@ -201,9 +201,9 @@ export default Vue.extend({
     },
     async save() {
       if (this.editedIndex !== '') {
-        await editGoalSetting(this.editedItem)
+        await editHabitSetting(this.editedItem)
       } else {
-        await addGoalSetting(this.editedItem)
+        await addHabitSetting(this.editedItem)
       }
       this.close()
     },

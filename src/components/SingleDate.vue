@@ -2,12 +2,12 @@
     <v-container>
       <v-row dense>
         <v-col
-          v-for="(goal, i) in getPickedDateGoalsInfo"
+          v-for="(habit, i) in getPickedDateHabitsInfo"
           :key="i"
           cols="6"
         >
-          <GoalInfo
-            v-bind='goal'
+          <HabitInfo
+            v-bind='habit'
             :pickedDate='pickedDate'
           />
         </v-col>
@@ -18,22 +18,22 @@
 <script lang='ts'>
 // @ is an alias to /src
 import Vue from 'vue'
-import GoalInfo from '@/components/GoalInfo.vue'
+import HabitInfo from '@/components/HabitInfo.vue'
 import { mapGetters, mapState } from 'vuex'
 
 export default Vue.extend({
   name: 'SingleDate',
   components: {
-    GoalInfo,
+    HabitInfo,
   },
   computed: {
-    ...mapGetters(['getPickedDateGoalsInfo']),
+    ...mapGetters(['getPickedDateHabitsInfo']),
     ...mapState(['pickedDate']),
   },
   data: () => ({
     getPickedDateDataSample: [
       {
-        goalId: 'goalId-1',
+        habitId: 'habitId-1',
         name: 'Weakup',
         description: 'We',
         streakId: 'streakId1',
@@ -41,7 +41,7 @@ export default Vue.extend({
         streakCount: 5,
       },
       {
-        goalId: 'goalId-2',
+        habitId: 'habitId-2',
         name: 'Running',
         description: 'Ru',
         streakId: 'streakId2',
@@ -49,7 +49,7 @@ export default Vue.extend({
         streakCount: 5,
       },
       {
-        goalId: '3',
+        habitId: '3',
         name: 'Reading',
         description: 'Re',
       },

@@ -1,4 +1,4 @@
-class Goal {
+class Habit {
   name: string
 
   description: string
@@ -18,18 +18,18 @@ class Goal {
 
 // Firestore data converter
 export default {
-  toFirestore(goal: SettingGoal) {
+  toFirestore(habit: SettingHabit) {
     return {
-      name: goal.name,
-      icon: goal.icon,
-      description: goal.description,
+      name: habit.name,
+      icon: habit.icon,
+      description: habit.description,
     }
   },
   fromFirestore(
     snapshot: firebase.firestore.DocumentSnapshot,
   ) {
     const data = snapshot.data()
-    return new Goal(
+    return new Habit(
       data?.name,
       data?.icon,
       data?.description,

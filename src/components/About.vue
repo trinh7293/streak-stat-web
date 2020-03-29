@@ -22,7 +22,7 @@
       them without thinking.<br/>
       Luckily there are many habits tracking
       apps available especially designed
-      to help you to set goals,<br/>
+      to help you to set habits,<br/>
       keep track of your habits and
       tackle your bad habits for free.<br/>
     </p>

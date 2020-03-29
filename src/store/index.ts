@@ -5,99 +5,147 @@ import {
   getTodayFormat, getAdjacentDay,
 } from '@/utils/dateTimeHandle'
 import {
-  dateCollGroup,
-  goalsColl,
+  firestore,
 } from '@/firebase_backend'
+import {
+  USER_COLLECTION,
+  HABITS_COLLECTION,
+  HABIT_DATE_SUBCOLLECTION,
+} from '@/constants'
 import {
   ADD_SETTING_DATA,
   EDIT_SETTING_DATA,
   DELETE_SETTING_DATA,
   SET_PICKED_DATE,
-  SET_GOAL_DATA,
+  SET_HABIT_DATA,
+  SET_USER,
+  SET_IS_AUTHENTICATED,
+  RESET_STORE,
 } from './mutation-types'
-import ChangeGoals from './helper'
+import ChangeHabits from './helper'
 
 Vue.use(Vuex)
 
-const initState: StateType = {
+const initState = (): StateType => ({
   pickedDate: getTodayFormat(),
-  settingGoals: [],
-  goals: [],
-}
+  settingHabits: [],
+  habits: [],
+  isAuthenticated: false,
+  user: null,
+})
 
 export default new Vuex.Store({
-  state: initState,
+  state: initState(),
   mutations: {
     [SET_PICKED_DATE](state, dateFormat) {
       state.pickedDate = dateFormat
     },
     [ADD_SETTING_DATA](
-      state, payload: SettingGoal,
+      state, payload: SettingHabit,
     ) {
-      const index = state.settingGoals.findIndex(
-        item => item.goalId === payload.goalId,
+      const index = state.settingHabits.findIndex(
+        item => item.habitId === payload.habitId,
       )
       if (index < 0) {
-        state.settingGoals.push(payload)
+        state.settingHabits.push(payload)
       }
     },
     [EDIT_SETTING_DATA](
-      state, payload: SettingGoal,
+      state, payload: SettingHabit,
     ) {
-      const index = state.settingGoals.findIndex(
-        item => item.goalId === payload.goalId,
+      const index = state.settingHabits.findIndex(
+        item => item.habitId === payload.habitId,
       )
       if (index >= 0) {
-        state.settingGoals.splice(index, 1, payload)
+        state.settingHabits.splice(index, 1, payload)
       }
     },
-    [DELETE_SETTING_DATA](state, goalId: string) {
-      const index = state.settingGoals.findIndex(
-        item => item.goalId === goalId,
+    [DELETE_SETTING_DATA](state, habitId: string) {
+      const index = state.settingHabits.findIndex(
+        item => item.habitId === habitId,
       )
       if (index >= 0) {
-        state.settingGoals.splice(index, 1)
+        state.settingHabits.splice(index, 1)
       }
     },
-    [SET_GOAL_DATA](state, payload: Array<Goal>) {
-      state.goals = payload
+    [SET_HABIT_DATA](state, payload: Array<Habit>) {
+      state.habits = payload
+    },
+    [SET_USER](state, payload: UserType) {
+      const { displayName, uid } = payload
+      state.user = {
+        displayName,
+        uid,
+      }
+    },
+    [SET_IS_AUTHENTICATED](state, payload: boolean) {
+      state.isAuthenticated = payload
+    },
+    [RESET_STORE](state) {
+      // acquire initial state
+      Object.assign(state, initState())
     },
   },
   getters: {
-    getGoalByDate: state => (date: string) => {
-      const goalsByDate = state.goals.filter(
+    getUid: (state): string | undefined => {
+      const userId = state.user?.uid
+      return userId
+    },
+    getDisplayName: (state): string | undefined => {
+      const displayName = state.user?.displayName
+      return displayName
+    },
+    getUserFirebaseDoc: (
+      state, getters,
+    ): firebase.firestore
+    .DocumentReference | null => {
+      if (!state.isAuthenticated) return null
+      const uid = getters.getUid
+      return firestore.collection(USER_COLLECTION)
+        .doc(uid)
+    },
+    getHabitCollection: (
+      state, getters,
+    ): firebase.firestore
+    .CollectionReference | null => {
+      if (!state.isAuthenticated) return null
+      return getters.getUserFirebaseDoc
+        ?.collection(HABITS_COLLECTION)
+    },
+    getHabitByDate: state => (date: string) => {
+      const habitsByDate = state.habits.filter(
         item => item.date === date,
       )
       const result:
-        Array<SingleDateGoals> = state.settingGoals.map(
+        Array<SingleDateHabits> = state.settingHabits.map(
           setting => {
-            const goal = goalsByDate.find(
-              g => g.goalId === setting.goalId,
+            const habit = habitsByDate.find(
+              g => g.habitId === setting.habitId,
             )
             return {
               ...setting,
-              start: goal?.start,
-              end: goal?.end,
-              doneTime: goal?.doneTime,
-              streakCount: goal?.streakCount,
+              start: habit?.start,
+              end: habit?.end,
+              doneTime: habit?.doneTime,
+              streakCount: habit?.streakCount,
             }
           },
         )
       return result
     },
-    getPickedDateGoalsInfo(
+    getPickedDateHabitsInfo(
       state, getters,
-    ): Array<SingleDateGoals> {
+    ): Array<SingleDateHabits> {
       const { pickedDate } = state
       const { prevDay } = getAdjacentDay(pickedDate)
-      const pickedDateGoals = getters
-        .getGoalByDate(pickedDate)
-      const prevDateGoals = getters
-        .getGoalByDate(prevDay)
+      const pickedDateHabits = getters
+        .getHabitByDate(pickedDate)
+      const prevDateHabits = getters
+        .getHabitByDate(prevDay)
       const mergeFunc = (
-        todayValue: SingleDateGoals,
-        prevValue: SingleDateGoals,
-      ): SingleDateGoals => {
+        todayValue: SingleDateHabits,
+        prevValue: SingleDateHabits,
+      ): SingleDateHabits => {
         if (prevValue.streakCount) {
           return {
             ...todayValue,
@@ -107,38 +155,38 @@ export default new Vuex.Store({
         return todayValue
       }
       return _.mergeWith(
-        pickedDateGoals,
-        prevDateGoals,
+        pickedDateHabits,
+        prevDateHabits,
         mergeFunc,
       )
     },
     getListStreak: state => (
-      goalList: Array<string>,
+      habitList: Array<string>,
     ) => {
-      const goalNum = goalList.length
-      const goalInList: Array<Goal> = state.goals.filter(
-        goal => goalList.includes(goal.goalId),
+      const habitNum = habitList.length
+      const habitInList: Array<Habit> = state.habits.filter(
+        habit => habitList.includes(habit.habitId),
       )
       const listOfStreakTail = Object.values(
-        _.groupBy(goalInList, 'date'),
+        _.groupBy(habitInList, 'date'),
       )
-        .filter(date => date.length === goalNum
-          && _.some(date, goal => goal
-            .end === goal.date))
+        .filter(date => date.length === habitNum
+          && _.some(date, habit => habit
+            .end === habit.date))
       const listStreak:
         Array<Streak> = listOfStreakTail.map(
-          goalsInSingleDate => {
-            const endGoal = goalsInSingleDate.find(
-              goal => goal.end === goal.date,
+          habitsInSingleDate => {
+            const endHabit = habitsInSingleDate.find(
+              habit => habit.end === habit.date,
             )
-            const smallestStreakGoal = _.minBy(
-              goalsInSingleDate, 'streakCount',
+            const smallestStreakHabit = _.minBy(
+              habitsInSingleDate, 'streakCount',
             )
             return {
-              start: smallestStreakGoal
+              start: smallestStreakHabit
                 ?.start || 'error from',
-              end: endGoal?.end || 'error to',
-              streakCount: smallestStreakGoal
+              end: endHabit?.end || 'error to',
+              streakCount: smallestStreakHabit
                 ?.streakCount || 0,
             }
           },
@@ -146,61 +194,61 @@ export default new Vuex.Store({
       return listStreak
     },
     getBestCompositionStreak: (_state, getter) => (
-      goalList: Array<string>,
+      habitList: Array<string>,
     ) => {
-      const goalNum = goalList.length
-      if (goalNum === 1) {
-        const goalId = goalList[0]
-        const goalStats:
-          Array<GoalsStatistic> = getter.getGoalStats
-        return goalStats.find(
-          sett => sett.goalId === goalId,
+      const habitNum = habitList.length
+      if (habitNum === 1) {
+        const habitId = habitList[0]
+        const habitStats:
+          Array<HabitsStatistic> = getter.getHabitStats
+        return habitStats.find(
+          sett => sett.habitId === habitId,
         )?.bestStreak || 0
       }
       const listStreak: Array<Streak> = getter
-        .getListStreak(goalList)
+        .getListStreak(habitList)
       return _.maxBy(listStreak, 'streakCount')
         ?.streakCount || 0
     },
     getCurrentCompositionStreak: (state, getter) => (
-      goalList: Array<string>,
+      habitList: Array<string>,
     ) => {
-      const goalNum = goalList.length
-      if (goalNum === 1) {
-        const goalId = goalList[0]
-        const goalStats:
-          Array<GoalsStatistic> = getter.getGoalStats
-        return goalStats.find(
-          sett => sett.goalId === goalId,
+      const habitNum = habitList.length
+      if (habitNum === 1) {
+        const habitId = habitList[0]
+        const habitStats:
+          Array<HabitsStatistic> = getter.getHabitStats
+        return habitStats.find(
+          sett => sett.habitId === habitId,
         )?.currentStreak || 0
       }
       const today = getTodayFormat()
-      const todayGoals = state.goals.filter(
-        goal => goal.date === today
-          && goalList.includes(goal.goalId),
+      const todayHabits = state.habits.filter(
+        habit => habit.date === today
+          && habitList.includes(habit.habitId),
       )
-      if (todayGoals.length < goalNum) {
+      if (todayHabits.length < habitNum) {
         return 0
       }
       return _.minBy(
-        todayGoals, 'streakCount',
+        todayHabits, 'streakCount',
       )?.streakCount || 0
     },
-    getGoalStats: state => {
+    getHabitStats: (state): Array<HabitsStatistic> => {
       const today = getTodayFormat()
       const stats:
-        Array<GoalsStatistic> = state.settingGoals
+        Array<HabitsStatistic> = state.settingHabits
           .map(sett => {
-            const todayGoal = state.goals.find(
-              g => g.goalId === sett.goalId
+            const todayHabit = state.habits.find(
+              g => g.habitId === sett.habitId
                 && g.date === today,
             )
-            const maxStreak = _.maxBy(state.goals.filter(
-              g => g.goalId === sett.goalId,
+            const maxStreak = _.maxBy(state.habits.filter(
+              g => g.habitId === sett.habitId,
             ), 'streakCount')
             return {
               ...sett,
-              currentStreak: todayGoal?.streakCount || 0,
+              currentStreak: todayHabit?.streakCount || 0,
               bestStreak: maxStreak?.streakCount || 0,
             }
           })
@@ -208,66 +256,89 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async initGoalSettingListener({ commit }) {
+    async initHabitSettingListener({
+      state, commit, getters,
+    }) {
       try {
-        goalsColl.onSnapshot(snapShot => {
-          snapShot.docChanges().forEach(change => {
-            const { doc } = change
-            const { name, icon, description } = doc.data()
-            const payload: SettingGoal = {
-              goalId: doc.id,
-              name,
-              icon,
-              description,
-            }
-            if (change.type === 'added') {
-              commit(ADD_SETTING_DATA, payload)
-            }
-            if (change.type === 'modified') {
-              commit(EDIT_SETTING_DATA, payload)
-            }
-            if (change.type === 'removed') {
-              console.log(
-                'commit remove setting: ',
-                payload,
-              )
-              commit(DELETE_SETTING_DATA, payload.goalId)
-            }
+        if (!state.isAuthenticated) {
+          throw new Error('user have not logged in')
+        }
+        const uid: string = getters.getUid
+        firestore.collection(USER_COLLECTION)
+          .doc(uid)
+          .collection(HABITS_COLLECTION)
+          .onSnapshot(snapShot => {
+            snapShot.docChanges().forEach(change => {
+              const { doc } = change
+              const { name, icon, description } = doc.data()
+              const payload: SettingHabit = {
+                habitId: doc.id,
+                name,
+                icon,
+                description,
+              }
+              if (change.type === 'added') {
+                commit(ADD_SETTING_DATA, payload)
+              }
+              if (change.type === 'modified') {
+                commit(EDIT_SETTING_DATA, payload)
+              }
+              if (change.type === 'removed') {
+                console.log(
+                  'commit remove setting: ',
+                  payload,
+                )
+                commit(DELETE_SETTING_DATA, payload.habitId)
+              }
+            })
           })
-        })
+      } catch (error) {
+        console.log('error in init habit listener: ', error)
+      }
+    },
+    async initDayDataListener({ state, commit, getters }) {
+      try {
+        if (!state.isAuthenticated) {
+          throw new Error('user have not logged in')
+        }
+        const uid: string = getters.getUid
+        firestore.collectionGroup(HABIT_DATE_SUBCOLLECTION)
+          .where('uid', '==', uid)
+          .onSnapshot(snapShot => {
+            snapShot.docChanges().forEach(change => {
+              const { doc } = change
+              const docData = doc.data()
+              const { habitId, doneTime } = docData
+              const docChanged = {
+                date: doc.id,
+                habitId,
+                doneTime,
+              }
+              const { habits } = state
+              if (change.type === 'added') {
+                const newHabits = new ChangeHabits(
+                  habits, docChanged,
+                ).addHabit()
+                commit(SET_HABIT_DATA, newHabits)
+              }
+              if (change.type === 'removed') {
+                const newHabits = new ChangeHabits(
+                  habits, docChanged,
+                ).deleteHabit()
+                commit(SET_HABIT_DATA, newHabits)
+              }
+            })
+          })
       } catch (error) {
         console.log('error', error)
       }
     },
-    async initDayDataListener({ state, commit }) {
-      try {
-        dateCollGroup.onSnapshot(snapShot => {
-          snapShot.docChanges().forEach(change => {
-            const { doc } = change
-            const docData = doc.data()
-            const { goalId, doneTime } = docData
-            const docChanged = {
-              date: doc.id,
-              goalId,
-              doneTime,
-            }
-            const { goals } = state
-            if (change.type === 'added') {
-              const newGoals = new ChangeGoals(
-                goals, docChanged,
-              ).addGoal()
-              commit(SET_GOAL_DATA, newGoals)
-            }
-            if (change.type === 'removed') {
-              const newGoals = new ChangeGoals(
-                goals, docChanged,
-              ).deleteGoal()
-              commit(SET_GOAL_DATA, newGoals)
-            }
-          })
-        })
-      } catch (error) {
-        console.log('error', error)
+    fetchUser({ commit }, user: UserType) {
+      if (user) {
+        commit(SET_USER, user)
+        commit(SET_IS_AUTHENTICATED, true)
+      } else {
+        commit(RESET_STORE)
       }
     },
   },

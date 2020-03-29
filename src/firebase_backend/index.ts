@@ -1,12 +1,10 @@
 // Firebase App (the core Firebase SDK) is always
 // required and must be listed first
 import * as firebase from 'firebase/app'
-import {
-  GOALS_COLLECTION, GOAL_DATE_SUBCOLLECTION,
-} from '@/constants'
 // Add the Firebase products that you want to use
 import 'firebase/firestore'
 import 'firebase/functions'
+import 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDujc3dEGQRXIGacm5JFiVHjgJbKt1Kw-4',
@@ -24,8 +22,4 @@ firebase.initializeApp(firebaseConfig)
 
 export const firestore = firebase.firestore()
 export const functions = firebase.functions()
-
-export const goalsColl = firestore
-  .collection(GOALS_COLLECTION)
-export const dateCollGroup = firestore
-  .collectionGroup(GOAL_DATE_SUBCOLLECTION)
+export const auth = firebase.auth()

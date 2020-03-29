@@ -1,13 +1,13 @@
 class DateRecord {
-  goalId: string
+  habitId: string
 
   doneTime: Date
 
   constructor(
-    goalId: string,
+    habitId: string,
     doneTime: Date,
   ) {
-    this.goalId = goalId
+    this.habitId = habitId
     this.doneTime = doneTime
   }
 }
@@ -16,7 +16,7 @@ class DateRecord {
 export default {
   toFirestore(date: DateRecordType) {
     return {
-      goalId: date.goalId,
+      habitId: date.habitId,
       doneTime: date.doneTime,
     }
   },
@@ -25,7 +25,7 @@ export default {
   ) {
     const data = snapshot.data()
     return new DateRecord(
-      data?.goalId,
+      data?.habitId,
       data?.doneTime,
     )
   },

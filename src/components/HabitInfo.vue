@@ -26,18 +26,18 @@
 <script lang='ts'>
 import Vue from 'vue'
 import {
-  deleteGoal,
-  addGoal,
+  deleteHabit,
+  addHabit,
 } from '@/api'
 
 export default Vue.extend({
-  name: 'GoalInfo',
+  name: 'HabitInfo',
   methods: {
     toggleStt() {
       if (this.streakCount) {
-        deleteGoal(this.pickedDate, this.goalId)
+        deleteHabit(this.pickedDate, this.habitId)
       } else {
-        addGoal(this.pickedDate, this.goalId)
+        addHabit(this.pickedDate, this.habitId)
       }
     },
   },
@@ -53,7 +53,7 @@ export default Vue.extend({
     },
     streakNum(): number {
       return this.streakCount
-        || this.prevStreakCount
+        || this.prevStreakCount || 0
     },
     streakString(): string {
       return `Current Streak: ${this.streakNum}`
@@ -64,7 +64,7 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    goalId: {
+    habitId: {
       type: String,
       required: true,
     },

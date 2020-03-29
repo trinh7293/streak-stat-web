@@ -2,24 +2,24 @@ import { getAdjacentDay } from '@/utils/dateTimeHandle'
 import _ from 'lodash'
 import moment from 'moment'
 
-export default class ChangeGoals {
-  goals: Goal[]
+export default class ChangeHabits {
+  habits: Habit[]
 
   date: string
 
-  goalId: string
+  habitId: string
 
   doneTime: Date
 
-  constructor(goals: Array<Goal>, docChanged: NewGoal) {
-    this.goals = goals
-    this.goalId = docChanged.goalId
+  constructor(habits: Array<Habit>, docChanged: NewHabit) {
+    this.habits = habits
+    this.habitId = docChanged.habitId
     this.date = docChanged.date
     this.doneTime = docChanged.doneTime?.toDate()
   }
 
-  addGoal() {
-    let newGoals: Array<Goal> = []
+  addHabit() {
+    let newHabits: Array<Habit> = []
     const {
       nextStreak,
       prevStreak,
@@ -31,17 +31,17 @@ export default class ChangeGoals {
       const newEnd = nextStreak.end
       const newDocStreakCount = moment(this.date)
         .diff(moment(newStart), 'day') + 1
-      const newDoc: Goal = {
+      const newDoc: Habit = {
         date: this.date,
-        goalId: this.goalId,
+        habitId: this.habitId,
         start: newStart,
         end: newEnd,
         doneTime: this.doneTime,
         streakCount: newDocStreakCount,
       }
-      newGoals = [
-        ...this.goals.map(g => {
-          if (g.goalId !== this.goalId) {
+      newHabits = [
+        ...this.habits.map(g => {
+          if (g.habitId !== this.habitId) {
             return g
           }
           if (
@@ -67,17 +67,17 @@ export default class ChangeGoals {
     } else if (nextStreak) {
       const oldStart = nextStreak.start
       const newStart = this.date
-      const newDoc: Goal = {
+      const newDoc: Habit = {
         date: this.date,
-        goalId: this.goalId,
+        habitId: this.habitId,
         start: newStart,
         end: nextStreak.end,
         doneTime: this.doneTime,
         streakCount: 1,
       }
-      newGoals = [
-        ...this.goals.map(g => {
-          if (g.goalId !== this.goalId) {
+      newHabits = [
+        ...this.habits.map(g => {
+          if (g.habitId !== this.habitId) {
             return g
           }
           if (g.start === oldStart) {
@@ -94,18 +94,18 @@ export default class ChangeGoals {
     } else if (prevStreak) {
       const oldEnd = prevStreak.end
       const newEnd = this.date
-      const newDoc: Goal = {
+      const newDoc: Habit = {
         date: this.date,
-        goalId: this.goalId,
+        habitId: this.habitId,
         start: prevStreak.start,
         end: newEnd,
         doneTime: this.doneTime,
         streakCount: moment(this.date)
           .diff(moment(prevStreak.start), 'day') + 1,
       }
-      newGoals = [
-        ...this.goals.map(g => {
-          if (g.goalId !== this.goalId) {
+      newHabits = [
+        ...this.habits.map(g => {
+          if (g.habitId !== this.habitId) {
             return g
           }
           if (g.end === oldEnd) {
@@ -119,44 +119,44 @@ export default class ChangeGoals {
         newDoc,
       ]
     } else {
-      const newDoc: Goal = {
+      const newDoc: Habit = {
         date: this.date,
-        goalId: this.goalId,
+        habitId: this.habitId,
         start: this.date,
         end: this.date,
         doneTime: this.doneTime,
         streakCount: 1,
       }
-      newGoals = [
-        ...this.goals,
+      newHabits = [
+        ...this.habits,
         newDoc,
       ]
     }
-    return newGoals
+    return newHabits
   }
 
-  deleteGoal() {
-    const goalDelete = this.goals.find(
-      item => item.goalId === this.goalId
+  deleteHabit() {
+    const habitDelete = this.habits.find(
+      item => item.habitId === this.habitId
         && item.date === this.date,
     )
-    if (!goalDelete) return this.goals
+    if (!habitDelete) return this.habits
     const {
       start,
       end,
       streakCount,
-    } = goalDelete
-    const newGoals = this.goals.filter(
-      item => item.goalId !== this.goalId
+    } = habitDelete
+    const newHabits = this.habits.filter(
+      item => item.habitId !== this.habitId
         || item.date !== this.date,
     )
     const {
       nextDay,
       prevDay,
     } = getAdjacentDay(this.date)
-    return newGoals.map(item => {
+    return newHabits.map(item => {
       if (
-        item.goalId === this.goalId
+        item.habitId === this.habitId
         && item.start === start
         && item.end === end
       ) {
@@ -183,12 +183,12 @@ export default class ChangeGoals {
       nextDay,
       prevDay,
     } = getAdjacentDay(this.date)
-    const nextStreak = _.find(this.goals, {
-      goalId: this.goalId,
+    const nextStreak = _.find(this.habits, {
+      habitId: this.habitId,
       start: nextDay,
     })
-    const prevStreak = _.find(this.goals, {
-      goalId: this.goalId,
+    const prevStreak = _.find(this.habits, {
+      habitId: this.habitId,
       end: prevDay,
     })
     return {

@@ -2,25 +2,38 @@ declare module 'v-calendar'
 
 interface StateType {
   pickedDate: string;
-  settingGoals: Array<SettingGoal>;
-  goals: Array<Goal>;
+  settingHabits: Array<SettingHabit>;
+  habits: Array<Habit>;
+  isAuthenticated: boolean;
+  user: UserType | null;
 }
 
-interface SettingGoal {
-  goalId: string;
+interface UserType {
+  uid: string;
+  displayName: string;
+}
+
+interface UserFirestoreDoc {
+  displayName: string;
+  email: string;
+}
+
+interface SettingHabit {
+  habitId: string;
   name: string;
   icon: string;
   description: string;
 }
 
 interface DateRecordType {
-  goalId: string;
+  uid: string;
+  habitId: string;
   doneTime?: Date;
 }
 
-interface Goal {
+interface Habit {
   date: string;
-  goalId: string;
+  habitId: string;
   start: string;
   end: string;
   streakCount: number;
@@ -28,17 +41,19 @@ interface Goal {
 }
 
 
-interface NewGoal {
-  goalId: string;
+interface NewHabit {
+  habitId: string;
   date: string;
   doneTime: firebase.firestore.Timestamp;
 }
 
-interface SingleDateGoals {
-  goalId: string;
+interface SingleDateHabits {
+  habitId: string;
   icon: string;
   name: string;
   description: string;
+  currentStreak?: number;
+  bestStreak?: number;
   start?: string;
   end?: string;
   streakCount?: number;
@@ -46,8 +61,8 @@ interface SingleDateGoals {
   doneTime?: Date;
 }
 
-interface GoalsStatistic {
-  goalId: string;
+interface HabitsStatistic {
+  habitId: string;
   icon: string;
   name: string;
   description: string;
