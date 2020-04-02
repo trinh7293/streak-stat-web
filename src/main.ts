@@ -37,6 +37,10 @@ Vue.use(VCalendar, {
 let app: Vue | null = null
 auth.onAuthStateChanged(user => {
   store.dispatch('fetchUser', user)
+  if (user) {
+    store.dispatch('initHabitSettingListener')
+    store.dispatch('initDayDataListener')
+  }
   if (!app) {
     /* eslint-disable no-new */
     app = new Vue({

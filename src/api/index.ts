@@ -149,7 +149,6 @@ export const userJoin = async (
     displayName,
   })
   store.dispatch('fetchUser', user)
-  // TODO test
   await userDoc().withConverter(userConverter).set({
     email,
     displayName,

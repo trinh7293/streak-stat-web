@@ -6,6 +6,8 @@ interface StateType {
   habits: Array<Habit>;
   isAuthenticated: boolean;
   user: UserType | null;
+  unsubHabitSetting: (() => void) | null;
+  unsubDayData: (() => void) | null;
 }
 
 interface UserType {

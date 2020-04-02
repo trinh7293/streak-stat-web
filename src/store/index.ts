@@ -21,6 +21,8 @@ import {
   SET_USER,
   SET_IS_AUTHENTICATED,
   RESET_STORE,
+  SET_UNSUB_HABITSETTING,
+  SET_UNSUB_DAYDATA,
 } from './mutation-types'
 import ChangeHabits from './helper'
 
@@ -32,6 +34,8 @@ const initState = (): StateType => ({
   habits: [],
   isAuthenticated: false,
   user: null,
+  unsubHabitSetting: null,
+  unsubDayData: null,
 })
 
 export default new Vuex.Store({
@@ -80,6 +84,12 @@ export default new Vuex.Store({
     },
     [SET_IS_AUTHENTICATED](state, payload: boolean) {
       state.isAuthenticated = payload
+    },
+    [SET_UNSUB_HABITSETTING](state, unsub: () => void) {
+      state.unsubHabitSetting = unsub
+    },
+    [SET_UNSUB_DAYDATA](state, unsub: () => void) {
+      state.unsubDayData = unsub
     },
     [RESET_STORE](state) {
       // acquire initial state
@@ -282,7 +292,12 @@ export default new Vuex.Store({
           throw new Error('user have not logged in')
         }
         const uid: string = getters.getUid
-        firestore.collection(USER_COLLECTION)
+        if (state.unsubHabitSetting) {
+          state.unsubHabitSetting()
+          console.log('unsubHabitSetting')
+        }
+        const unsubHabitSetting = firestore
+          .collection(USER_COLLECTION)
           .doc(uid)
           .collection(HABITS_COLLECTION)
           .onSnapshot(snapShot => {
@@ -310,6 +325,7 @@ export default new Vuex.Store({
               }
             })
           })
+        commit(SET_UNSUB_HABITSETTING, unsubHabitSetting)
       } catch (error) {
         console.log('error in init habit listener: ', error)
       }
@@ -320,7 +336,12 @@ export default new Vuex.Store({
           throw new Error('user have not logged in')
         }
         const uid: string = getters.getUid
-        firestore.collectionGroup(HABIT_DATE_SUBCOLLECTION)
+        if (state.unsubDayData) {
+          state.unsubDayData()
+          console.log('unsubDayData')
+        }
+        const unsubDayData = firestore
+          .collectionGroup(HABIT_DATE_SUBCOLLECTION)
           .where('uid', '==', uid)
           .onSnapshot(snapShot => {
             snapShot.docChanges().forEach(change => {
@@ -347,9 +368,19 @@ export default new Vuex.Store({
               }
             })
           })
+        commit(SET_UNSUB_DAYDATA, unsubDayData)
       } catch (error) {
         console.log('error', error)
       }
+    },
+    unsubAllListerners({ state }) {
+      if (state.unsubHabitSetting) {
+        state.unsubHabitSetting()
+      }
+      if (state.unsubDayData) {
+        state.unsubDayData()
+      }
+      console.log('unsubed all listenners')
     },
     fetchUser({ commit }, user: UserType) {
       if (user) {

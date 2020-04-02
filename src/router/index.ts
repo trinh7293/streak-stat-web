@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Join from '@/views/Join.vue'
+import HabitsManagement from '@/views/HabitsManagement.vue'
+import Today from '@/views/Today.vue'
+import Statistic from '@/views/Statistic.vue'
 import { auth } from '@/firebase_backend'
 
 Vue.use(VueRouter)
@@ -10,8 +12,24 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Today',
+    component: Today,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/habits',
+    name: 'HabitsManagement',
+    component: HabitsManagement,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/statistic',
+    name: 'Statistic',
+    component: Statistic,
     meta: {
       requiresAuth: true,
     },
