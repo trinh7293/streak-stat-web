@@ -223,22 +223,39 @@ export default new Vuex.Store({
         )?.currentStreak || 0
       }
       const today = getTodayFormat()
+      const { prevDay } = getAdjacentDay(today)
       const todayHabits = state.habits.filter(
         habit => habit.date === today
           && habitList.includes(habit.habitId),
       )
-      if (todayHabits.length < habitNum) {
-        return 0
+      const prevdayHabits = state.habits.filter(
+        habit => habit.date === prevDay
+          && habitList.includes(habit.habitId),
+      )
+      let todayNum = 0
+      let prevdayNum = 0
+      if (todayHabits.length === habitNum) {
+        todayNum = _.minBy(
+          todayHabits, 'streakCount',
+        )?.streakCount || 0
       }
-      return _.minBy(
-        todayHabits, 'streakCount',
-      )?.streakCount || 0
+      if (prevdayHabits.length === habitNum) {
+        prevdayNum = _.minBy(
+          prevdayHabits, 'streakCount',
+        )?.streakCount || 0
+      }
+      return todayNum || prevdayNum || 0
     },
     getHabitStats: (state): Array<HabitsStatistic> => {
       const today = getTodayFormat()
       const stats:
         Array<HabitsStatistic> = state.settingHabits
           .map(sett => {
+            const { prevDay } = getAdjacentDay(today)
+            const prevdayHabit = state.habits.find(
+              g => g.habitId === sett.habitId
+                && g.date === prevDay,
+            )
             const todayHabit = state.habits.find(
               g => g.habitId === sett.habitId
                 && g.date === today,
@@ -248,7 +265,8 @@ export default new Vuex.Store({
             ), 'streakCount')
             return {
               ...sett,
-              currentStreak: todayHabit?.streakCount || 0,
+              currentStreak: todayHabit?.streakCount
+                || prevdayHabit?.streakCount || 0,
               bestStreak: maxStreak?.streakCount || 0,
             }
           })
