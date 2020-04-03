@@ -13,7 +13,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-toolbar-title>My CRUD</v-toolbar-title>
+          <v-toolbar-title>My HABITS</v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -25,7 +25,7 @@
               <v-btn color="primary" dark class="mb-2"
                 v-on="on"
               >
-                New Item
+                Create Habit
               </v-btn>
             </template>
             <v-card>

@@ -9,15 +9,21 @@
     >
       <v-icon dark>mdi-logout</v-icon>
     </v-btn>
+    <span v-if="user">
+      Hello {{user.displayName}}
+    </span>
     <v-content>
-      <router-view/>
+      <transition>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
     </v-content>
     <v-bottom-navigation
       v-show="isAuthenticated"
       dark
       grow
       app
-      v-model="bottomNav"
       :background-color="bottomNav.backColor"
       :color="bottomNav.color"
     >
@@ -42,7 +48,7 @@ import { userSignOut } from '@/api'
 
 export default Vue.extend({
   computed: {
-    ...mapState(['isAuthenticated']),
+    ...mapState(['isAuthenticated', 'user']),
   },
   methods: {
     async logout() {
@@ -76,7 +82,7 @@ export default Vue.extend({
         icon: 'mdi-home',
         url: '/',
         backColor: 'dark',
-        color: 'indigo',
+        color: 'teal',
       },
       navItems: [
         {
@@ -84,21 +90,21 @@ export default Vue.extend({
           icon: 'mdi-home',
           url: '/',
           backColor: 'dark',
-          color: 'indigo',
+          color: 'teal',
         },
         {
           title: 'Habits',
           icon: 'mdi-star',
           url: '/habits',
           backColor: 'dark',
-          color: 'indigo',
+          color: 'teal',
         },
         {
           title: 'Stats',
           icon: 'mdi-chart-bar',
           url: '/statistic',
           backColor: 'dark',
-          color: 'indigo',
+          color: 'teal',
         },
       ],
     }
