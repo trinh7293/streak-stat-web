@@ -35,6 +35,12 @@
                   <span class="headline">
                     {{ formTitle }}
                   </span>
+                  <v-spacer></v-spacer>
+                  <v-icon
+                    v-show="checkItemEdited"
+                    color="red"
+                    @click="dialogDelete = true"
+                  >mdi-delete</v-icon>
                 </v-card-title>
 
                 <v-card-text>
@@ -76,58 +82,42 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:item.action="{ item }">
-        <!-- <v-icon
-          small
-          class="mr-2"
-          @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon> -->
-        <v-icon
-          small
-          color="red"
-          @click="dialogDelete = true"
-        >
-          mdi-delete
-        </v-icon>
-        <v-dialog
-          v-model="dialogDelete"
-          max-width="290"
-        >
-          <v-card>
-            <v-card-title
-              class="headline">
-              Confirm delete habit
-            </v-card-title>
-
-            <v-card-text>
-              This action will permently
-              delete all your date data
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn
-                color="green darken-1"
-                text
-                @click="dialogDelete = false"
-              >
-                Calcel
-              </v-btn>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="deleteItem(item)"
-              >
-                Delete
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </template>
     </v-data-table>
+    <v-dialog
+      v-model="dialogDelete"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title
+          class="headline">
+          Confirm delete habit
+        </v-card-title>
+
+        <v-card-text>
+          This action will permently
+          delete all your date data
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogDelete = false"
+          >
+            Calcel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="deleteItem"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <p>
       Click to habit to edit
     </p>
@@ -162,7 +152,11 @@ export default Vue.extend({
       { text: 'Description', value: 'description' },
       { text: 'Current streak', value: 'currentStreak' },
       { text: 'Best streak', value: 'bestStreak' },
-      { text: 'Actions', value: 'action', sortable: false },
+      // {
+      //   text: 'Actions',
+      //   value: 'action',
+      //   sortable: false,
+      // },
     ],
     valid: false,
     nameRules: [
@@ -201,9 +195,12 @@ export default Vue.extend({
         reset: () => void;
        }
     },
+    checkItemEdited() {
+      return this.editedIndex !== ''
+    },
     formTitle() {
-      return this.editedIndex === ''
-        ? 'New Item' : 'Edit Item'
+      return this.checkItemEdited
+        ? 'Edit Item' : 'New Item'
     },
   },
 
@@ -224,12 +221,13 @@ export default Vue.extend({
       this.editedItem = { ...item }
       this.dialog = true
     },
-    async deleteItem(item: SettingHabit) {
-      await deleteHabitSetting(item.habitId)
+    async deleteItem() {
+      await deleteHabitSetting(this.editedItem.habitId)
       this.$toasted.global.actionSuccess({
         message: 'Habit deleted',
       })
       this.dialogDelete = false
+      this.close()
     },
     close() {
       this.dialog = false
