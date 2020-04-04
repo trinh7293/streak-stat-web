@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VCalendar from 'v-calendar'
 import { auth } from '@/firebase_backend'
-import Toasted, { ToastOptions } from 'vue-toasted'
+import Toasted from 'vue-toasted'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -11,11 +11,6 @@ Vue.config.productionTip = false
 
 // register the toast with the custom message
 Vue.use(Toasted)
-const option: ToastOptions = {
-  position: 'top-right',
-  theme: 'bubble',
-  duration: 5000,
-}
 Vue.toasted.register('my_app_error',
   payload => {
     // if there is no message passed show default message
@@ -25,7 +20,26 @@ Vue.toasted.register('my_app_error',
 
     // if there is a message show it with the message
     return `Oops.. ${payload.message}`
-  }, option)
+  }, {
+    position: 'top-right',
+    theme: 'bubble',
+    duration: 5000,
+  })
+Vue.toasted.register('actionSuccess',
+  payload => {
+    // if there is no message passed show default message
+    if (!payload.message) {
+      return 'Success'
+    }
+
+    // if there is a message show it with the message
+    return `${payload.message}`
+  }, {
+    type: 'success',
+    position: 'top-right',
+    theme: 'bubble',
+    duration: 5000,
+  })
 
 
 // register calendar

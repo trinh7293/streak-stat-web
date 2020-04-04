@@ -1,43 +1,44 @@
 <template>
   <v-app>
-    <v-btn class="mx-2"
-      fab
-      dark
-      small
-      color="teal"
-      @click='logout'
-    >
-      <v-icon dark>mdi-logout</v-icon>
-    </v-btn>
-    <span v-if="user">
-      Hello {{user.displayName}}
-    </span>
-    <v-content>
-      <transition>
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
-      </transition>
-    </v-content>
-    <v-bottom-navigation
-      v-show="isAuthenticated"
-      dark
-      grow
-      app
-      :background-color="bottomNav.backColor"
-      :color="bottomNav.color"
-    >
+    <main>
       <v-btn
-        exact
-        v-for="(item, index) in navItems"
-        :key="index"
-        :to="item.url"
-        :value="item"
+        dark
+        color="primary"
+        @click='logout'
       >
-        <span>{{ item.title }}</span>
-        <v-icon>{{ item.icon }}</v-icon>
+        Log out
+        <v-icon right dark>mdi-logout</v-icon>
       </v-btn>
-    </v-bottom-navigation>
+      <p class="text-center display-1" v-if="user">
+        {{user.displayName}} 's HABITS
+      </p>
+      <v-content>
+        <transition>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </transition>
+      </v-content>
+      <v-bottom-navigation
+        v-show="isAuthenticated"
+        dark
+        grow
+        app
+        :background-color="bottomNav.backColor"
+        :color="bottomNav.color"
+      >
+        <v-btn
+          exact
+          v-for="(item, index) in navItems"
+          :key="index"
+          :to="item.url"
+          :value="item"
+        >
+          <span>{{ item.title }}</span>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
+    </main>
   </v-app>
 </template>
 

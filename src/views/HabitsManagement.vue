@@ -5,6 +5,7 @@
       :items="getHabitStats"
       sort-by="calories"
       class="elevation-1"
+      @click:row="editItem"
     >
       <template v-slot:item.icon="{ item }">
         <v-icon>
@@ -29,54 +30,63 @@
               </v-btn>
             </template>
             <v-card>
-              <v-card-title>
-                <span class="headline">
-                  {{ formTitle }}
-                </span>
-              </v-card-title>
+              <v-form ref="form" v-model="valid">
+                <v-card-title>
+                  <span class="headline">
+                    {{ formTitle }}
+                  </span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.name"
-                        label="Name"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.description"
-                        label="description"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <IconPicker
-                        v-model="editedItem.icon" />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          required
+                          v-model="editedItem.name"
+                          prepend-icon="mdi-star"
+                          :rules="nameRules"
+                          label="Name" />
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          required
+                          v-model="editedItem.description"
+                          prepend-icon="mdi-cow"
+                          :rules="descriptionRules"
+                          label="description" />
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <IconPicker
+                          v-model="editedItem.icon" />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text
-                  @click="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" text
-                  @click="save">Save</v-btn>
-              </v-card-actions>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text
+                    @click="close">Cancel</v-btn>
+                  <v-btn color="blue darken-1" text
+                    @click="submit">Save</v-btn>
+                </v-card-actions>
+              </v-form>
             </v-card>
           </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-icon
+        <!-- <v-icon
           small
           class="mr-2"
           @click="editItem(item)"
         >
           mdi-pencil
-        </v-icon>
+        </v-icon> -->
         <v-icon
           small
+          color="red"
           @click="dialogDelete = true"
         >
           mdi-delete
@@ -118,6 +128,9 @@
         </v-dialog>
       </template>
     </v-data-table>
+    <p>
+      Click to habit to edit
+    </p>
   </main>
 </template>
 
@@ -151,6 +164,17 @@ export default Vue.extend({
       { text: 'Best streak', value: 'bestStreak' },
       { text: 'Actions', value: 'action', sortable: false },
     ],
+    valid: false,
+    nameRules: [
+      (v: string) => !!v || 'Name is required',
+      (v: string) => (v && v.length <= 20)
+        || 'Name must be less than 20 characters',
+    ],
+    descriptionRules: [
+      (v: string) => !!v || 'Description is required',
+      (v: string) => (v && v.length <= 50)
+        || 'Description must be less than 50 characters',
+    ],
     editedIndex: '',
     editedItem: {
       habitId: '',
@@ -168,6 +192,15 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters(['getHabitStats']),
+    form(): Vue & {
+      validate: () => boolean;
+      reset: () => void;
+      } {
+      return this.$refs.form as Vue & {
+        validate: () => boolean;
+        reset: () => void;
+       }
+    },
     formTitle() {
       return this.editedIndex === ''
         ? 'New Item' : 'Edit Item'
@@ -183,6 +216,9 @@ export default Vue.extend({
   },
 
   methods: {
+    checkClick(value: unknown) {
+      console.log(value)
+    },
     editItem(item: SettingHabit) {
       this.editedIndex = item.habitId
       this.editedItem = { ...item }
@@ -190,22 +226,37 @@ export default Vue.extend({
     },
     async deleteItem(item: SettingHabit) {
       await deleteHabitSetting(item.habitId)
+      this.$toasted.global.actionSuccess({
+        message: 'Habit deleted',
+      })
       this.dialogDelete = false
     },
     close() {
       this.dialog = false
+      this.form.reset()
       setTimeout(() => {
         this.editedItem = { ...this.defaultItem }
         this.editedIndex = ''
       }, 300)
     },
-    async save() {
-      if (this.editedIndex !== '') {
-        await editHabitSetting(this.editedItem)
-      } else {
-        await addHabitSetting(this.editedItem)
+    async submit() {
+      if (this.form.validate()) {
+        try {
+          if (this.editedIndex !== '') {
+            await editHabitSetting(this.editedItem)
+          } else {
+            await addHabitSetting(this.editedItem)
+            this.$toasted.global.actionSuccess({
+              message: 'Habit created',
+            })
+          }
+          this.close()
+        } catch (error) {
+          this.$toasted.global.my_app_error(error)
+          console.log('error in create habit', error)
+          this.form.reset()
+        }
       }
-      this.close()
     },
   },
 })

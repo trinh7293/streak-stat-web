@@ -27,6 +27,12 @@
             v-model="habitSelected"
           ></v-checkbox>
         </v-flex>
+        <div v-show="settingHabits.length === 0">
+          <v-btn
+            color="primary"
+            to="/habits"
+          >Create Habit</v-btn>
+        </div>
       </v-layout>
     </v-container>
   </main>

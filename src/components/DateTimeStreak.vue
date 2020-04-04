@@ -1,6 +1,26 @@
 <template>
   <v-row justify='center'>
-    <v-date-picker v-model='pickedDate'></v-date-picker>
+    <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        transition="scale-transition"
+        offset-y
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-model="date"
+            label="Date"
+            prepend-icon="mdi-calendar"
+            readonly
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="date"
+          @input="menu = false" />
+      </v-menu>
   </v-row>
 </template>
 
@@ -10,9 +30,12 @@ import { mapState } from 'vuex'
 import { SET_PICKED_DATE } from '@/store/mutation-types'
 
 export default Vue.extend({
+  data: () => ({
+    menu: false,
+  }),
   computed: {
     ...mapState(['pickedDate']),
-    pickedDate: {
+    date: {
       get() {
         return this.$store.state.pickedDate
       },

@@ -4,13 +4,19 @@
         <v-col
           v-for="(habit, i) in getPickedDateHabitsInfo"
           :key="i"
-          cols="6"
+          cols="12"
         >
           <HabitInfo
             v-bind='habit'
             :pickedDate='pickedDate'
           />
         </v-col>
+        <div v-show="getPickedDateHabitsInfo.length === 0">
+          <v-btn
+            color="primary"
+            to="/habits"
+          >Create Habit</v-btn>
+        </div>
     </v-row>
   </v-container>
 </template>

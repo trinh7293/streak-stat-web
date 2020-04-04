@@ -78,7 +78,8 @@ export const addHabitSetting = async (
   )
   try {
     checkAuthenticated()
-    habitsColl().withConverter(habitConverter).add(addData)
+    await habitsColl()
+      .withConverter(habitConverter).add(addData)
   } catch (error) {
     console.log('error in add setting: ', error)
   }
@@ -104,6 +105,7 @@ export const editHabitSetting = async (
 
 const deleteAtPath = async (path: string) => {
   try {
+    console.log('deletePath', path)
     const deleteFn = await functions
       .httpsCallable('recursiveDelete')
     const result = await deleteFn({ path })
@@ -119,12 +121,11 @@ export const deleteHabitSetting = async (
   // habitsColl().doc(data.habitId).delete()
   try {
     checkAuthenticated()
-    deleteAtPath(`/
-      ${USER_COLLECTION}/
-      ${uid()}/
-      ${HABITS_COLLECTION}/
-      ${habitId}
-    `)
+    await deleteAtPath('/'
+      + `${USER_COLLECTION}/`
+      + `${uid()}/`
+      + `${HABITS_COLLECTION}/`
+      + `${habitId}`)
   } catch (error) {
     console.log('error in delete setting: ', error)
   }
