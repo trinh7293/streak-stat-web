@@ -83,7 +83,7 @@ export default Vue.extend({
         icon: 'mdi-home',
         url: '/',
         backColor: 'dark',
-        color: 'teal',
+        color: 'primary',
       },
       navItems: [
         {
@@ -91,21 +91,21 @@ export default Vue.extend({
           icon: 'mdi-home',
           url: '/',
           backColor: 'dark',
-          color: 'teal',
+          color: 'primary',
         },
         {
           title: 'Habits',
           icon: 'mdi-star',
           url: '/habits',
           backColor: 'dark',
-          color: 'teal',
+          color: 'primary',
         },
         {
           title: 'Stats',
           icon: 'mdi-chart-bar',
           url: '/statistic',
           backColor: 'dark',
-          color: 'teal',
+          color: 'primary',
         },
       ],
     }

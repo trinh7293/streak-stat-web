@@ -1,26 +1,25 @@
 <template>
-  <v-card
-    :color="sttColor"
-    dark
-    @click='toggleStt'
+  <v-list-item
+    @click="toggleStt"
   >
-    <div class="d-flex flex-no-wrap justify-space-between">
-      <div class="d-flex flex-no-wrap justify-start">
-        <v-icon dark>{{icon}}</v-icon>
-        <div>
-          <v-card-title
-            class="headline"
-            v-text="name"
-          ></v-card-title>
-
-          <v-card-subtitle
-            v-text="streakString"
-          />
-        </div>
-      </div>
-      <v-icon v-if="streakCount">mdi-check</v-icon>
-    </div>
-  </v-card>
+    <v-list-item-icon>
+      <v-icon v-text="icon"></v-icon>
+    </v-list-item-icon>
+    <v-list-item-content>
+      <v-list-item-title
+        v-text="name"
+      ></v-list-item-title>
+      <v-list-item-subtitle>
+        {{streakString}}
+      </v-list-item-subtitle>
+    </v-list-item-content>
+    <v-list-item-action>
+      <v-checkbox
+        :value="isDone"
+        :readonly="true"
+      />
+    </v-list-item-action>
+  </v-list-item>
 </template>
 
 <script lang='ts'>
@@ -57,6 +56,9 @@ export default Vue.extend({
     },
     streakString(): string {
       return `Current Streak: ${this.streakNum}`
+    },
+    isDone(): boolean {
+      return !!this.streakCount
     },
   },
   props: {

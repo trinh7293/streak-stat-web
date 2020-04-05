@@ -1,23 +1,14 @@
 <template>
     <v-container>
-      <v-row dense>
-        <v-col
-          v-for="(habit, i) in getPickedDateHabitsInfo"
-          :key="i"
-          cols="12"
-        >
-          <HabitInfo
-            v-bind='habit'
-            :pickedDate='pickedDate'
-          />
-        </v-col>
-        <div v-show="getPickedDateHabitsInfo.length === 0">
-          <v-btn
-            color="primary"
-            to="/habits"
-          >Create Habit</v-btn>
-        </div>
-    </v-row>
+    <v-list
+      v-for="(item, i) in habits"
+      :key="i"
+    >
+      <HabitInfo
+        v-bind='item'
+        :pickedDate='pickedDate'
+      />
+    </v-list>
   </v-container>
 </template>
 
@@ -33,33 +24,10 @@ export default Vue.extend({
     HabitInfo,
   },
   computed: {
-    ...mapGetters(['getPickedDateHabitsInfo']),
+    ...mapGetters({
+      habits: 'getPickedDateHabitsInfo',
+    }),
     ...mapState(['pickedDate']),
   },
-  data: () => ({
-    getPickedDateDataSample: [
-      {
-        habitId: 'habitId-1',
-        name: 'Weakup',
-        description: 'We',
-        streakId: 'streakId1',
-        start: '2020-02-07',
-        streakCount: 5,
-      },
-      {
-        habitId: 'habitId-2',
-        name: 'Running',
-        description: 'Ru',
-        streakId: 'streakId2',
-        start: '2020-02-08',
-        streakCount: 5,
-      },
-      {
-        habitId: '3',
-        name: 'Reading',
-        description: 'Re',
-      },
-    ],
-  }),
 })
 </script>
