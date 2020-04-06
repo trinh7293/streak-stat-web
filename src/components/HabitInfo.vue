@@ -3,14 +3,20 @@
     @click="toggleStt"
   >
     <v-list-item-icon>
-      <v-icon v-text="icon"></v-icon>
+      <v-icon
+        :color="iconColorStr"
+        v-text="icon"></v-icon>
     </v-list-item-icon>
     <v-list-item-content>
       <v-list-item-title
         v-text="name"
       ></v-list-item-title>
       <v-list-item-subtitle>
-        {{streakString}}
+        Current Streak: <span
+          :class="{goodStreak: checkGoodStreak}"
+          >
+          {{streakString}}
+        </span>
       </v-list-item-subtitle>
     </v-list-item-content>
     <v-list-item-action>
@@ -41,24 +47,23 @@ export default Vue.extend({
     },
   },
   computed: {
-    sttColor(): string {
-      if (this.streakCount < 1) {
-        return 'red'
-      }
-      if (this.streakCount < 3) {
-        return '#1bae16'
-      }
-      return '#1bae16'
-    },
     streakNum(): number {
       return this.streakCount
         || this.prevStreakCount || 0
     },
     streakString(): string {
-      return `Current Streak: ${this.streakNum}`
+      return `${this.streakNum}`
     },
     isDone(): boolean {
       return !!this.streakCount
+    },
+    checkGoodStreak(): boolean {
+      return this.streakNum >= 3
+    },
+    iconColorStr(): string {
+      return this.isDone
+        ? this.iconColor
+        : ''
     },
   },
   props: {
@@ -77,6 +82,10 @@ export default Vue.extend({
     icon: {
       type: String,
       required: true,
+    },
+    iconColor: {
+      type: String,
+      default: '',
     },
     start: {
       type: String,
@@ -101,3 +110,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.goodStreak {
+  color: green;
+}
+</style>

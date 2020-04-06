@@ -75,6 +75,7 @@ export const addHabitSetting = async (
     'name',
     'description',
     'icon',
+    'iconColor',
   )
   try {
     checkAuthenticated()
@@ -93,6 +94,7 @@ export const editHabitSetting = async (
     'name',
     'description',
     'icon',
+    'iconColor',
   )
   try {
     checkAuthenticated()
