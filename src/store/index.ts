@@ -308,7 +308,7 @@ export default new Vuex.Store({
                 name: doc.data().name,
                 icon: doc.data().icon,
                 iconColor: doc.data().iconColor,
-                description: doc.data().name,
+                description: doc.data().description,
               }
               if (change.type === 'added') {
                 commit(ADD_SETTING_DATA, payload)
