@@ -303,12 +303,12 @@ export default new Vuex.Store({
           .onSnapshot(snapShot => {
             snapShot.docChanges().forEach(change => {
               const { doc } = change
-              const { name, icon, description } = doc.data()
               const payload: SettingHabit = {
                 habitId: doc.id,
-                name,
-                icon,
-                description,
+                name: doc.data().name,
+                icon: doc.data().icon,
+                iconColor: doc.data().iconColor,
+                description: doc.data().name,
               }
               if (change.type === 'added') {
                 commit(ADD_SETTING_DATA, payload)

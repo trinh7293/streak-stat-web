@@ -5,13 +5,18 @@
       class="ma-2 white--text"
       @click='openDialog'
     >
-      Select
-      <v-icon right dark>{{value}}</v-icon>
+      Select Icon
     </v-btn>
+    <v-icon
+      :color="value.color"
+    >{{value.name}}</v-icon>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-card-title>
           <span class="headline">Select Icon</span>
+          <v-icon
+            :color="value.color"
+          >{{value.name}}</v-icon>
         </v-card-title>
         <v-container fluid>
           <v-row>
@@ -27,6 +32,24 @@
               </v-card>
             </v-col>
           </v-row>
+          <v-card-title>
+            <span class="headline">Select Color</span>
+          </v-card-title>
+          <v-row>
+            <v-col
+              v-for="(color, index) in listColor"
+              :key="index"
+              class="d-flex child-flex"
+              cols="2"
+            >
+              <v-card @click="selectColor(color)"
+                flat tile class="d-flex">
+                <v-icon
+                  :color="color"
+                >{{value.name}}</v-icon>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -34,6 +57,10 @@
             color="blue darken-1"
             text
             @click="close">Cancel</v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="submit">Select</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -52,7 +79,15 @@ export default Vue.extend({
       this.dialog = false
     },
     selectIcon(icon: string) {
-      this.$emit('input', icon)
+      this.value.name = icon
+      this.$emit('input', this.value)
+    },
+    selectColor(color: string) {
+      this.value.color = color
+      this.$emit('input', this.value)
+    },
+    submit() {
+      this.$emit('input', this.value)
       this.close()
     },
   },
@@ -60,12 +95,16 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: String,
+      type: Object,
       default: null,
     },
   },
   data: () => ({
     dialog: false,
+    listColor: [
+      'green',
+      'red',
+    ],
     listIcon: [
       'mdi-run-fast',
       'mdi-sleep',

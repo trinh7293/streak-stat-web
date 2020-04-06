@@ -5,14 +5,18 @@ class Habit {
 
   icon: string
 
+  iconColor: string
+
   constructor(
     name: string,
     description: string,
     icon: string,
+    iconColor: string,
   ) {
     this.name = name
     this.description = description
     this.icon = icon
+    this.iconColor = iconColor
   }
 }
 
@@ -21,8 +25,9 @@ export default {
   toFirestore(habit: SettingHabit) {
     return {
       name: habit.name,
-      icon: habit.icon,
       description: habit.description,
+      icon: habit.icon,
+      iconColor: habit.iconColor,
     }
   },
   fromFirestore(
@@ -31,8 +36,9 @@ export default {
     const data = snapshot.data()
     return new Habit(
       data?.name,
-      data?.icon,
       data?.description,
+      data?.icon,
+      data?.iconColor,
     )
   },
 }

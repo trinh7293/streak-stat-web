@@ -24,6 +24,7 @@ interface SettingHabit {
   habitId: string;
   name: string;
   icon: string;
+  iconColor: string;
   description: string;
 }
 
@@ -76,4 +77,9 @@ interface Streak {
   start: string;
   end: string;
   streakCount: number;
+}
+
+interface IconHabit {
+  name: string;
+  color: string;
 }

@@ -8,7 +8,9 @@
       @click:row="editItem"
     >
       <template v-slot:item.icon="{ item }">
-        <v-icon>
+        <v-icon
+          :color="item.iconColor"
+        >
           {{item.icon}}
         </v-icon>
       </template>
@@ -64,7 +66,7 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <IconPicker
-                          v-model="editedItem.icon" />
+                          v-model="iconModel" />
                       </v-col>
                     </v-row>
                   </v-container>
@@ -175,17 +177,38 @@ export default Vue.extend({
       name: '',
       description: '',
       icon: '',
+      iconColor: '',
     },
     defaultItem: {
       habitId: '',
       name: '',
       description: '',
       icon: '',
+      iconColor: '',
     },
   }),
 
   computed: {
     ...mapGetters(['getHabitStats']),
+    iconModel: {
+      get(): IconHabit {
+        return {
+          name: this.editedItem.icon,
+          color: this.editedItem.iconColor,
+        }
+      },
+      set(val: IconHabit) {
+        this.editedItem.icon = val.name
+        this.editedItem.iconColor = val.color
+      },
+    },
+    checkItemEdited() {
+      return this.editedIndex !== ''
+    },
+    formTitle() {
+      return this.checkItemEdited
+        ? 'Edit Item' : 'New Item'
+    },
     form(): Vue & {
       validate: () => boolean;
       reset: () => void;
@@ -194,13 +217,6 @@ export default Vue.extend({
         validate: () => boolean;
         reset: () => void;
        }
-    },
-    checkItemEdited() {
-      return this.editedIndex !== ''
-    },
-    formTitle() {
-      return this.checkItemEdited
-        ? 'Edit Item' : 'New Item'
     },
   },
 
