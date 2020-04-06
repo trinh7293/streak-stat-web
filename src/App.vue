@@ -2,6 +2,7 @@
   <v-app>
     <main>
       <v-btn
+        v-show="isAuthenticated"
         dark
         color="primary"
         @click='logout'
