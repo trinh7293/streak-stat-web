@@ -1,6 +1,8 @@
 <template>
     <v-container>
     <v-list
+      flat
+      max-width="400"
       v-for="(item, i) in habits"
       :key="i"
     >
