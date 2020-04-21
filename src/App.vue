@@ -108,6 +108,13 @@ export default Vue.extend({
           backColor: 'dark',
           color: 'primary',
         },
+        {
+          title: 'About',
+          icon: 'mdi-head-snowflake-outline',
+          url: '/about',
+          backColor: 'dark',
+          color: 'primary',
+        },
       ],
     }
   },

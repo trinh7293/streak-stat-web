@@ -5,6 +5,7 @@ import Join from '@/views/Join.vue'
 import HabitsManagement from '@/views/HabitsManagement.vue'
 import Today from '@/views/Today.vue'
 import Statistic from '@/views/Statistic.vue'
+import About from '@/views/About.vue'
 import { auth } from '@/firebase_backend'
 
 Vue.use(VueRouter)
@@ -30,6 +31,14 @@ const routes = [
     path: '/statistic',
     name: 'Statistic',
     component: Statistic,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
     meta: {
       requiresAuth: true,
     },
